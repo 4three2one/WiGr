@@ -108,13 +108,19 @@ class ResNet_CSI(nn.Module):
         for i, element in enumerate(layers):
             layer.append(self._make_layer(block, self.inplanes * layers[i], element, stride=strides[i]))
         self.layer = nn.Sequential(*layer)
-
         self.feature = nn.Sequential(
             nn.Conv1d(self.inplanes * block.expansion, self.inplanes*2 * block.expansion, kernel_size=3, stride=1, padding=0, bias=False),
             nn.BatchNorm1d(self.inplanes* 2 * block.expansion),
             nn.ReLU(inplace=True),
         )
         self.out_dim = self.inplanes*2 * block.expansion  # self.inplanes*2 * block.expansion
+        #####xjw
+        self.l1 = nn.Conv1d(self.inplanes*2 * block.expansion,self.inplanes*2 * block.expansion, kernel_size=3, stride=1, padding=0,
+                            bias=False)
+        self.l2 = nn.BatchNorm1d(self.inplanes*2 * block.expansion)
+        self.l3 = nn.ReLU(inplace=True)
+        self.l4 = nn.AdaptiveAvgPool1d(1)
+        self.classifier = nn.Sequential(self.l1, self.l2, self.l3, self.l4)
 
     def _make_layer(self, block, planes, num_layer, stride=1):
         downsample = None
@@ -139,6 +145,9 @@ class ResNet_CSI(nn.Module):
         x = self.maxpool(x)
         c = self.layer(x)
         feaure = torch.squeeze(self.feature(c))
+        #xjw
+        feaure = self.classifier(feaure)
+        feaure = feaure.view(feaure.size(0), -1)
         return feaure
 
 

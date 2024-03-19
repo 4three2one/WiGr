@@ -14,7 +14,7 @@ import itertools,functools
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from torch.utils.data import TensorDataset, DataLoader
-from CustomDataset import CustomIterDataset
+from DataSet.CustomDataset import CustomIterDataset
 
 def default_loader(root):   #root is the data storage path  eg. path = D:/CSI_Data/signfi_matlab2numpy/
     train_label_activity_path = root/"datatrain_activity_label.npy"
@@ -112,7 +112,7 @@ class ARIL(CustomIterDataset):
         self.all_label_activity = np.squeeze(all_label_activity)
         self.all_label_location = np.squeeze(all_label_location)
         self.total_samples = len(self.all_label_activity)
-        self.loc_select = np.ones(self.total_samples, dtype=np.bool)
+        self.loc_select = np.ones(self.total_samples, dtype=bool)
         index_temp = np.arange(self.total_samples)
 
         if location is not None:
@@ -134,8 +134,10 @@ class ARIL(CustomIterDataset):
     def get_item(self, index):
         sample_index = index
         activity_label_index = self.all_label_activity[sample_index]
+        loc_label_index = self.all_label_location[sample_index]
 
         ges_label = torch.tensor(activity_label_index).type(torch.LongTensor)
+        loc_label = torch.tensor(loc_label_index).type(torch.LongTensor)
         data_index = self.all_amp[sample_index]  # shape [52,196]
 
         if self.data_shape == 'split':
@@ -153,28 +155,32 @@ class ARIL(CustomIterDataset):
         else:
             sample = torch.from_numpy(data_index).type(torch.FloatTensor)  # shape [52,196]
 
-        return sample,ges_label,
+        return sample,ges_label,loc_label
 
     def metric_data(self):
         # sampling a batch data and split to supportset and training/testing set
         query_data=[]
         query_ges_label = []
+        query_domain_label = []
 
         supports_data = []
         supports_ges_label = []
+        supports_domain_label = []
         for i in range(self.num_class):
             temp = self.sample_index_per_class[i][self.batch_idx*self.batch_size:(self.batch_idx+1)*self.batch_size]
             for j in range(0,self.batch_size-self.num_shot):
-                sample, ges_label = self.get_item(temp[j])
+                sample, ges_label,domain_label = self.get_item(temp[j])
                 query_data.append(sample)
                 query_ges_label.append(ges_label)
+                query_domain_label.append(domain_label)
             for k in range(self.batch_size-self.num_shot,self.batch_size):
-                sample, ges_label = self.get_item(temp[k])
+                sample, ges_label,domain_label = self.get_item(temp[k])
                 supports_data.append(sample)
                 supports_ges_label.append(ges_label)
+                supports_domain_label.append(domain_label)
 
         self.batch_idx += 1
-        return (query_data,query_ges_label),(supports_data,supports_ges_label)
+        return (query_data,query_ges_label,query_domain_label),(supports_data,supports_ges_label,supports_domain_label)
 
     def __iter__(self):
         return self

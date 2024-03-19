@@ -9,7 +9,7 @@ import torch
 import os
 import itertools,functools
 from torch.utils.data import TensorDataset, DataLoader
-from CustomDataset import CustomIterDataset
+from DataSet.CustomDataset import CustomIterDataset
 
 
 def split_array_bychunk(array, chunksize, include_residual=True):
@@ -73,10 +73,10 @@ class CSI_301(CustomIterDataset):
         self.userid = self.group.csi_label_user[:]  # 人 0,1,2,3,4
 
         self.total_samples = len( self.gesture)
-        self.select = np.ones(self.total_samples, dtype=np.bool)
-        self.room_select = np.ones(self.total_samples, dtype=np.bool)
-        self.user_select = np.ones(self.total_samples, dtype=np.bool)
-        self.loc_select = np.ones(self.total_samples, dtype=np.bool)
+        self.select = np.ones(self.total_samples, dtype=bool)
+        self.room_select = np.ones(self.total_samples, dtype=bool)
+        self.user_select = np.ones(self.total_samples, dtype=bool)
+        self.loc_select = np.ones(self.total_samples, dtype=bool)
 
         index_temp = np.arange(self.total_samples)
 
@@ -150,28 +150,32 @@ class CSI_301(CustomIterDataset):
             else:
                 sample = sample.permute(1, 2, 0).reshape(684, -1)  # shape [3X2x114, 1800]
 
-        return sample,ges_label,
+        return sample,ges_label, torch.tensor(1)
 
     def metric_data(self):
         # sampling a batch data and split to supportset and training/testing set
         datas_data=[]
         datas_ges_label = []
+        query_domain_label = []
 
         supports_data = []
         supports_ges_label = []
+        supports_domain_label = []
         for i in range(self.num_class):
             temp = self.sample_index_per_class[i][self.batch_idx*self.batch_size:(self.batch_idx+1)*self.batch_size]
             for j in range(0,self.batch_size-self.num_shot):
-                sample, ges_label = self.get_item(temp[j])
+                sample, ges_label,domain_label = self.get_item(temp[j])
                 datas_data.append(sample)
                 datas_ges_label.append(ges_label)
+                query_domain_label.append(domain_label)
             for k in range(self.batch_size-self.num_shot,self.batch_size):
-                sample, ges_label = self.get_item(temp[k])
+                sample, ges_label,domain_label = self.get_item(temp[k])
                 supports_data.append(sample)
                 supports_ges_label.append(ges_label)
+                supports_domain_label.append(domain_label)
 
         self.batch_idx += 1
-        return (datas_data,datas_ges_label),(supports_data,supports_ges_label)
+        return (datas_data,datas_ges_label,query_domain_label),(supports_data,supports_ges_label,supports_domain_label)
 
     def get_choose_label(self,id):
         if id == "user":
@@ -197,7 +201,7 @@ class CSI_301(CustomIterDataset):
 
 
 if __name__ == "__main__":
-    root = Path("F:/CSI_301")
+    root=Path("/data/wifi/WiGr/dataset")
     a = CSI_301(root=root,roomid=[0],userid=[0],location=[0],data_shape='split',chunk_size=30,num_shot=1,batch_size=5,mode="amplitude")
 
     print(a.num_batch)

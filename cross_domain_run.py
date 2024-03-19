@@ -1,3 +1,4 @@
+import os
 from torch.utils.data import TensorDataset, DataLoader
 import torch
 import argparse
@@ -13,8 +14,7 @@ import numpy as np
 from evaluation import confmat
 
 from parameter_config import config
-
-
+from  pytorch_lightning.loggers.tensorboard import TensorBoardLogger
 def run(args):
     # torch.autograd.set_detect_anomaly(True)
     torch.cuda.empty_cache()
@@ -26,10 +26,10 @@ def run(args):
                                  data_shape=args.data_shape,chunk_size=args.chunk_size,num_shot=args.num_shot,
                                  batch_size=args.batch_size,mode=args.mode,trainmode=True,trainsize=0.8)
 
-    target_data = DataSet.create(name=args.dataset, root=args.root,roomid=args.train_roomid,
-                                 userid=args.train_userid,
-                                 location=args.train_location,orientation=args.train_orientation,
-                                 receiverid=args.train_receiverid,sampleid=args.train_sampleid,
+    target_data = DataSet.create(name=args.dataset, root=args.root,roomid=args.test_roomid,
+                                 userid=args.test_userid,
+                                 location=args.test_location,orientation=args.test_orientation,
+                                 receiverid=args.test_receiverid,sampleid=args.test_sampleid,
                                  data_shape=args.data_shape,chunk_size=args.chunk_size,num_shot=args.num_shot,
                                  batch_size=args.batch_size,mode=args.mode,trainmode=False,trainsize=0.8)
 
@@ -50,7 +50,12 @@ def run(args):
                                   metric_method=args.metric_method,
                                   k_shot=args.num_shot,
                                   num_class_linear_flag=args.num_class_linear_flag,
-                                  combine=args.combine)
+                                  num_domain_linear_flag=args.num_domain_linear_flag,
+                                  combine=args.combine,
+                                  class_feature_style=args.class_feature_style,
+                                  domain_feature_style=args.domain_feature_style,
+                                  pn_style=args.pn_style,
+                                  )
     elif args.model_name == 'PrototypicalCnnLstmNet':
         if args.data_shape == 'split':
             model = models.create(name=args.model_name,
@@ -75,7 +80,9 @@ def run(args):
                                   metric_method=args.metric_method,
                                   k_shot=args.num_shot,
                                   num_class_linear_flag=args.num_class_linear_flag,
-                                  combine=args.combine)
+                                  combine=args.combine,
+                                  args=args
+                                  )
     else:
         model = models.create(name=args.model_name,
                               in_channel_cnn=args.in_channel_cnn,
@@ -85,14 +92,33 @@ def run(args):
                               metric_method=args.metric_method,
                               k_shot=args.num_shot,
                               num_class_linear_flag=args.num_class_linear_flag,
-                              combine=args.combine)
+                              combine=args.combine,
+                              args=args
+                              )
 
     if data_model_match:
         from pytorch_lightning.callbacks import ModelCheckpoint
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
-        trainer = pl.Trainer(callbacks=[checkpoint_callback,],log_every_n_steps=1,max_epochs=args.max_epochs,gpus=1)   # precision = 16
+        #自定义log
+        existing_versions = []
+        if not os.path.exists(os.path.join(args.log_dir,args.dataset)):
+            os.makedirs(os.path.join(args.log_dir,args.dataset))
+        for bn in os.listdir(os.path.join(args.log_dir,args.dataset)):
+            # d = listing["name"]
+            # bn = os.path.basename(d)
+            if "version" in bn:
+                dir_ver = bn.split("_")[-1].replace('/', '')
+                existing_versions.append(int(dir_ver))
+        if len(existing_versions) == 0:
+            max_version=0
+        else:
+            max_version=max(existing_versions)+1
+
+        version = (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+( f"Domain-{args.domain_feature_style}_" if args.num_domain_linear_flag else "") + ( f"PN-{args.pn_style}_" if args.pn_style else "") +("Combine-" if args.combine else "")+f"version_{str(max_version)}"
+        tb_logger = TensorBoardLogger(save_dir=args.log_dir,name=args.dataset,version=version)
+        trainer = pl.Trainer(callbacks=[checkpoint_callback,],log_every_n_steps=1,max_epochs=args.max_epochs,gpus=1,logger=tb_logger )   # precision = 16
         trainer.fit(model,tr_loader,te_loader)
-        # print(trainer.logger.log_dir)
+        print(trainer.logger.log_dir)
         # print(len(model.confmat_linear_all)
 
         # print([x.shape for x in model.comfmat_metric_all])
@@ -144,6 +170,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--root', default="/your/data/path",
                         help="datasets path")
+    parser.add_argument('--log_dir', default="./lighting_logs",
+                        help="log path")
     parser.add_argument('--dataset', default=None,
                         help="the dataset name: aril,csi_301,widar")
     parser.add_argument('--data_shape', default=False,
@@ -189,10 +217,18 @@ if __name__ == '__main__':
                         help="metric_method")
     parser.add_argument('--num_class_linear_flag', default=None,
                         help="the number of categories and the flag of using linear or not")
+    #xjw
+    parser.add_argument('--num_domain_linear_flag', default=None,
+                        help="the number of categories and the flag of using linear or not")
+
     parser.add_argument('--combine', default=False,
                         help="combine linear method with metric or not")
 
     parser.add_argument('--max_epochs', default=None, help="the max epoches")
+
+    parser.add_argument('--class_feature_style', default=None, help="the max epoches")
+    parser.add_argument('--domain_feature_style', default=None, help="the max epoches")
+    parser.add_argument('--pn_style', default=None, help="the max epoches")
 
     args = parser.parse_args()
 
@@ -204,7 +240,6 @@ if __name__ == '__main__':
         PrototypicalResNet_config = setting['PrototypicalResNet_config']
         PrototypicalCnnLstmNet_config = setting['PrototypicalCnnLstmNet_config']
         PrototypicalMobileNet_config = setting['PrototypicalMobileNet_config']
-        metric_config = setting['metric_config']
         max_epochs = setting['max_epochs']
 
         args.train_roomid = source_data_config['roomid']
@@ -245,17 +280,27 @@ if __name__ == '__main__':
         args.width_mult = PrototypicalMobileNet_config['width_mult']
         args.MobileNet_inchannel = PrototypicalMobileNet_config['inchannel']
 
-        args.metric_method = metric_config['metric_method']
-        args.num_class_linear_flag = metric_config['num_class_linear_flag']
-        args.combine = metric_config['combine']
+        exps = setting['exps']
+        ex_repeat = setting['ex_repeat']
+        for exp in exps:
 
-        args.max_epochs = max_epochs
-        ex_repeat  =  setting['ex_repeat']
+            metric_config = exp['metric_config']
+            style_config = exp['style_config']
+            args.metric_method = metric_config['metric_method']
+            args.num_class_linear_flag = metric_config['num_class_linear_flag']
+            args.num_domain_linear_flag = metric_config['num_domain_linear_flag']
+            args.combine = metric_config['combine']
+            args.max_epochs = max_epochs
+            args.class_feature_style = style_config['class_feature_style']
+            args.domain_feature_style = style_config['domain_feature_style']
+            args.pn_style = style_config['pn_style']
 
-        print("Experiment Setting Index:{}".format(i))
-        print("Experiment Setting Config:{}".format(setting))
+            print("Experiment Setting Index:{}".format(i))
+            print("Experiment Setting Config:{}".format(setting))
 
-        for j in range(ex_repeat):
-            run(args)
-        # print(args)
+            #代码调整  class_feature_style  domain_feature_style
+
+            for j in range(ex_repeat):
+                run(args)
+            # print(args)
 

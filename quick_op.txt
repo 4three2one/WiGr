@@ -1,0 +1,16 @@
+
+conda activate wigr
+
+tensorboard --logdir="/data/projs/WiGr/lighting_logs"  --bind_all
+
+http://172.20.32.251:6006/#timeseries
+
+
+cd /data/projs/WiGr/lighting_logs
+
+
+tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril"  --bind_all
+
+
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril" --port 6006 --bind_all &
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/csi_301" --port 6007 --bind_all &
