@@ -120,7 +120,7 @@ class PrototypicalResNet(pl.LightningModule):
     #     # learning style network on randomized gesture
     #     return self.classifier_s(self.randomize(self.featurizer(x), "gesture"))
 
-    def randomize(self, x, what="style", eps=1e-5):  # torch.Size([128, 512])
+    def randomize(self, x, what=None, eps=1e-5):  # torch.Size([128, 512])
         if what == None:
             return x
         sizes = x.size()
@@ -241,7 +241,7 @@ class PrototypicalResNet(pl.LightningModule):
         else:
             su_feature_final = su_feature_k_shot
 
-        predict_label = self.similarity_metric(self.randomize(qu_feature,what=self.pn_style),self.randomize(su_feature_final,what=self.pn_style))
+        predict_label = self.similarity_metric(self.randomize(qu_feature),self.randomize(su_feature_final,what=self.pn_style))
         loss = self.criterion(predict_label, qu_activity_label.long().squeeze())
         self.log("GesTr_loss", loss)
         self.train_acc(predict_label, qu_activity_label.long().squeeze())
@@ -334,7 +334,7 @@ class PrototypicalResNet(pl.LightningModule):
         else:
             su_feature_final = su_feature_k_shot
 
-        predict_label = self.similarity_metric(self.randomize(qu_feature,self.pn_style),self.randomize(su_feature_final,what=self.pn_style))
+        predict_label = self.similarity_metric(self.randomize(qu_feature),self.randomize(su_feature_final,what=self.pn_style))
         loss = self.criterion(predict_label, qu_activity_label.long().squeeze())
         self.log("GesVa_loss", loss)
         self.val_acc(predict_label, qu_activity_label.long().squeeze())

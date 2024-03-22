@@ -26,10 +26,10 @@ def run(args):
                                  data_shape=args.data_shape,chunk_size=args.chunk_size,num_shot=args.num_shot,
                                  batch_size=args.batch_size,mode=args.mode,trainmode=True,trainsize=0.8)
 
-    target_data = DataSet.create(name=args.dataset, root=args.root,roomid=args.test_roomid,
-                                 userid=args.test_userid,
-                                 location=args.test_location,orientation=args.test_orientation,
-                                 receiverid=args.test_receiverid,sampleid=args.test_sampleid,
+    target_data = DataSet.create(name=args.dataset, root=args.root,roomid=args.train_roomid,
+                                 userid=args.train_userid,
+                                 location=args.train_location,orientation=args.train_orientation,
+                                 receiverid=args.train_receiverid,sampleid=args.train_sampleid,
                                  data_shape=args.data_shape,chunk_size=args.chunk_size,num_shot=args.num_shot,
                                  batch_size=args.batch_size,mode=args.mode,trainmode=False,trainsize=0.8)
 
@@ -232,75 +232,74 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    for i,setting in enumerate(config):
-        source_data_config = setting['source_data_config']
-        target_data_config = setting['target_data_config']
-        data_sample_config = setting['data_sample_config']
-        encoder_config = setting['encoder_config']
-        PrototypicalResNet_config = setting['PrototypicalResNet_config']
-        PrototypicalCnnLstmNet_config = setting['PrototypicalCnnLstmNet_config']
-        PrototypicalMobileNet_config = setting['PrototypicalMobileNet_config']
-        max_epochs = setting['max_epochs']
+    setting =config[args.dataset]
+    source_data_config = setting['source_data_config']
+    target_data_config = setting['target_data_config']
+    data_sample_config = setting['data_sample_config']
+    encoder_config = setting['encoder_config']
+    PrototypicalResNet_config = setting['PrototypicalResNet_config']
+    PrototypicalCnnLstmNet_config = setting['PrototypicalCnnLstmNet_config']
+    PrototypicalMobileNet_config = setting['PrototypicalMobileNet_config']
+    max_epochs = setting['max_epochs']
 
-        args.train_roomid = source_data_config['roomid']
-        args.train_userid = source_data_config['userid']
-        args.train_location = source_data_config['location']
-        args.train_orientation = source_data_config['orientation']
-        args.train_receiverid = source_data_config['receiverid']
-        args.train_sampleid = source_data_config['sampleid']
+    args.train_roomid = source_data_config['roomid']
+    args.train_userid = source_data_config['userid']
+    args.train_location = source_data_config['location']
+    args.train_orientation = source_data_config['orientation']
+    args.train_receiverid = source_data_config['receiverid']
+    args.train_sampleid = source_data_config['sampleid']
 
-        args.test_roomid = target_data_config['roomid']
-        args.test_userid = target_data_config['userid']
-        args.test_location = target_data_config['location']
-        args.test_orientation = target_data_config['orientation']
-        args.test_receiverid = target_data_config['receiverid']
-        args.test_sampleid = target_data_config['sampleid']
+    args.test_roomid = target_data_config['roomid']
+    args.test_userid = target_data_config['userid']
+    args.test_location = target_data_config['location']
+    args.test_orientation = target_data_config['orientation']
+    args.test_receiverid = target_data_config['receiverid']
+    args.test_sampleid = target_data_config['sampleid']
 
-        args.root = Path(data_sample_config['root'])
-        args.dataset = data_sample_config['dataset']
-        args.data_shape = data_sample_config['data_shape']
-        args.chunk_size = data_sample_config['chunk_size']
-        args.num_shot = data_sample_config['num_shot']
-        args.batch_size = data_sample_config['batch_size']
-        args.mode = data_sample_config['mode']
-        args.align = data_sample_config['align']
+    args.root = Path(data_sample_config['root'])
+    args.dataset = data_sample_config['dataset']
+    args.data_shape = data_sample_config['data_shape']
+    args.chunk_size = data_sample_config['chunk_size']
+    args.num_shot = data_sample_config['num_shot']
+    args.batch_size = data_sample_config['batch_size']
+    args.mode = data_sample_config['mode']
+    args.align = data_sample_config['align']
 
-        args.model_name = encoder_config['model_name']
+    args.model_name = encoder_config['model_name']
 
-        args.layers = PrototypicalResNet_config['layers']
-        args.strides = PrototypicalResNet_config['strides']
-        args.ResNet_inchannel = PrototypicalResNet_config['inchannel']
-        args.groups = PrototypicalResNet_config['groups']
+    args.layers = PrototypicalResNet_config['layers']
+    args.strides = PrototypicalResNet_config['strides']
+    args.ResNet_inchannel = PrototypicalResNet_config['inchannel']
+    args.groups = PrototypicalResNet_config['groups']
 
-        args.in_channel_cnn = PrototypicalCnnLstmNet_config['in_channel_cnn']
-        args.out_feature_dim_cnn = PrototypicalCnnLstmNet_config['out_feature_dim_cnn']
-        args.out_feature_dim_lstm = PrototypicalCnnLstmNet_config['out_feature_dim_lstm']
-        args.num_lstm_layer = PrototypicalCnnLstmNet_config['num_lstm_layer']
+    args.in_channel_cnn = PrototypicalCnnLstmNet_config['in_channel_cnn']
+    args.out_feature_dim_cnn = PrototypicalCnnLstmNet_config['out_feature_dim_cnn']
+    args.out_feature_dim_lstm = PrototypicalCnnLstmNet_config['out_feature_dim_lstm']
+    args.num_lstm_layer = PrototypicalCnnLstmNet_config['num_lstm_layer']
 
-        args.width_mult = PrototypicalMobileNet_config['width_mult']
-        args.MobileNet_inchannel = PrototypicalMobileNet_config['inchannel']
+    args.width_mult = PrototypicalMobileNet_config['width_mult']
+    args.MobileNet_inchannel = PrototypicalMobileNet_config['inchannel']
 
-        exps = setting['exps']
-        ex_repeat = setting['ex_repeat']
-        for exp in exps:
+    exps = setting['exps']
+    ex_repeat = setting['ex_repeat']
+    for exp in exps:
 
-            metric_config = exp['metric_config']
-            style_config = exp['style_config']
-            args.metric_method = metric_config['metric_method']
-            args.num_class_linear_flag = metric_config['num_class_linear_flag']
-            args.num_domain_linear_flag = metric_config['num_domain_linear_flag']
-            args.combine = metric_config['combine']
-            args.max_epochs = max_epochs
-            args.class_feature_style = style_config['class_feature_style']
-            args.domain_feature_style = style_config['domain_feature_style']
-            args.pn_style = style_config['pn_style']
+        metric_config = exp['metric_config']
+        style_config = exp['style_config']
+        args.metric_method = metric_config['metric_method']
+        args.num_class_linear_flag = metric_config['num_class_linear_flag']
+        args.num_domain_linear_flag = metric_config['num_domain_linear_flag']
+        args.combine = metric_config['combine']
+        args.max_epochs = max_epochs
+        args.class_feature_style = style_config['class_feature_style']
+        args.domain_feature_style = style_config['domain_feature_style']
+        args.pn_style = style_config['pn_style']
 
-            print("Experiment Setting Index:{}".format(i))
-            print("Experiment Setting Config:{}".format(setting))
+        print("Experiment Setting Config:{}".format(setting))
 
-            #代码调整  class_feature_style  domain_feature_style
+        #代码调整  class_feature_style  domain_feature_style
 
-            for j in range(ex_repeat):
-                run(args)
-            # print(args)
+        for j in range(ex_repeat):
+            run(args)
+        # print(args)
 

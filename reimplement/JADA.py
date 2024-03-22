@@ -121,7 +121,7 @@ if __name__ == "__main__":
     def step2():
         y_source_predict = d(e_source(x_source))
         y_target_predict = d(e_target(x_target))
-        L2_d = loss2_d(y_source_predict, y_target_predict)
+        L2_d = loss2_d(y_source_predict, y_target_predict)  #domain的鉴别
         optim2_d.zero_grad()
         L2_d.backward()
         optim2_d.step()

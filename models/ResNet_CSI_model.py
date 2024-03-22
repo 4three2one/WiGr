@@ -88,6 +88,24 @@ class Bottleneck(nn.Module):
 
         return out
 
+class ChannelAttention(nn.Module):
+    def __init__(self, channels, reduction=16):
+        super(ChannelAttention, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool1d(1)
+        self.fc = nn.Sequential(
+            nn.Linear(channels, channels // reduction),
+            nn.ReLU(inplace=True),
+            nn.Linear(channels // reduction, channels)
+        )
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        avg_out = self.avg_pool(x).squeeze(-1)
+        channel_att = self.fc(avg_out).unsqueeze(2)
+        channel_att = self.sigmoid(channel_att)
+        return x * channel_att
+
+
 
 class ResNet_CSI(nn.Module):
 
@@ -121,6 +139,11 @@ class ResNet_CSI(nn.Module):
         self.l3 = nn.ReLU(inplace=True)
         self.l4 = nn.AdaptiveAvgPool1d(1)
         self.classifier = nn.Sequential(self.l1, self.l2, self.l3, self.l4)
+        #
+
+        self.channel_attention1 = ChannelAttention(342)
+        self.channel_attention2 = ChannelAttention(384)
+        self.channel_attention3 = ChannelAttention(768)
 
     def _make_layer(self, block, planes, num_layer, stride=1):
         downsample = None
@@ -139,12 +162,15 @@ class ResNet_CSI(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        x = self.channel_attention1(x)
         x = self.conv1(x)
+        x=self.channel_attention2(x)
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
         c = self.layer(x)
         feaure = torch.squeeze(self.feature(c))
+        feaure = self.channel_attention3(feaure)
         #xjw
         feaure = self.classifier(feaure)
         feaure = feaure.view(feaure.size(0), -1)
