@@ -141,9 +141,9 @@ class ResNet_CSI(nn.Module):
         self.classifier = nn.Sequential(self.l1, self.l2, self.l3, self.l4)
         #
 
-        self.channel_attention1 = ChannelAttention(342)
-        self.channel_attention2 = ChannelAttention(384)
-        self.channel_attention3 = ChannelAttention(768)
+        self.channel_attention1 = ChannelAttention(inchannel)
+        self.channel_attention2 = ChannelAttention(self.inplanes)
+        self.channel_attention3 = ChannelAttention(self.inplanes*2 * block.expansion,)
 
     def _make_layer(self, block, planes, num_layer, stride=1):
         downsample = None

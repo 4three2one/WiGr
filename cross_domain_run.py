@@ -101,9 +101,10 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        if not os.path.exists(os.path.join(args.log_dir,args.dataset)):
-            os.makedirs(os.path.join(args.log_dir,args.dataset))
-        for bn in os.listdir(os.path.join(args.log_dir,args.dataset)):
+        exp_name=f"{args.dataset}-{args.batch_size}"
+        if not os.path.exists(os.path.join(args.log_dir,exp_name)):
+            os.makedirs(os.path.join(args.log_dir,exp_name))
+        for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
             # d = listing["name"]
             # bn = os.path.basename(d)
             if "version" in bn:
@@ -114,8 +115,8 @@ def run(args):
         else:
             max_version=max(existing_versions)+1
 
-        version = (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+( f"Domain-{args.domain_feature_style}_" if args.num_domain_linear_flag else "") + ( f"PN-{args.pn_style}_" if args.pn_style else "") +("Combine-" if args.combine else "")+f"version_{str(max_version)}"
-        tb_logger = TensorBoardLogger(save_dir=args.log_dir,name=args.dataset,version=version)
+        version =f"{args.cross_type}-{args.num_shot}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+( f"Domain-{args.domain_feature_style}_" if args.num_domain_linear_flag else "") + ( f"PN-{args.pn_style}_" if args.pn_style else "") +("Combine-" if args.combine else "")+f"version_{str(max_version)}"
+        tb_logger = TensorBoardLogger(save_dir=args.log_dir,name=exp_name,version=version)
         trainer = pl.Trainer(callbacks=[checkpoint_callback,],log_every_n_steps=1,max_epochs=args.max_epochs,gpus=1,logger=tb_logger )   # precision = 16
         trainer.fit(model,tr_loader,te_loader)
         print(trainer.logger.log_dir)
@@ -172,8 +173,13 @@ if __name__ == '__main__':
                         help="datasets path")
     parser.add_argument('--log_dir', default="./lighting_logs",
                         help="log path")
-    parser.add_argument('--dataset', default=None,
+    parser.add_argument('--dataset', required=True,
+                        choices=['aril', 'csi_301', 'widar'],
                         help="the dataset name: aril,csi_301,widar")
+    parser.add_argument('--cross_type', required=True,
+                        choices=['loc', 'user', 'env','ori','rx','in'],
+                        help="the dataset name: aril,csi_301,widar")
+
     parser.add_argument('--data_shape', default=False,
                         help="the data shape: 1D, 2D, split for the three different models")
     parser.add_argument('--chunk_size', default=None,

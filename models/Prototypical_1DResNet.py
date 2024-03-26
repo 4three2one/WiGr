@@ -221,7 +221,7 @@ class PrototypicalResNet(pl.LightningModule):
 
         # for few-shot, we using average values of all the support set sample-feature as the final feature.
         if self.k_shot != 1:
-            su_feature_temp1 = su_feature.reshape(-1,self.k_shot,su_feature.size()[1],su_feature.size()[2])
+            su_feature_temp1 = su_feature.reshape(-1,self.k_shot,su_feature.size()[1])
             su_feature_k_shot = su_feature_temp1.mean(1,keepdim=False)
         else:
             su_feature_k_shot = su_feature
@@ -313,7 +313,7 @@ class PrototypicalResNet(pl.LightningModule):
 
         # for few-shot, we using average values of all the support set sample-feature as the final feature.
         if self.k_shot != 1:
-            su_feature_temp1 = su_feature.reshape(-1, self.k_shot, su_feature.size()[1] , su_feature.size()[2])
+            su_feature_temp1 = su_feature.reshape(-1, self.k_shot, su_feature.size()[1])
             su_feature_k_shot = su_feature_temp1.mean(1, keepdim=False)
 
         else:

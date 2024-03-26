@@ -3,11 +3,11 @@ config = {
         {
             'source_data_config': {'roomid': None, 'userid': None, 'location': None, 'orientation': None,
                                    'receiverid': None, 'sampleid': None, },
-            'target_data_config': {'roomid': None, 'userid': None, 'location': [2], 'orientation': None,
+            'target_data_config': {'roomid': None, 'userid': None, 'location': None, 'orientation': None,
                                    'receiverid': None,
                                    'sampleid': None, },
             'data_sample_config': {'root': "/data/wifi/WiGr/", 'dataset': "aril", 'data_shape': '1D', 'chunk_size': 50,
-                                   'num_shot': 1, 'batch_size': 5, 'mode': 'amplitude', 'align': True},
+                                   'num_shot': 4, 'batch_size': 5, 'mode': 'amplitude', 'align': True},
             'encoder_config': {'model_name': 'PrototypicalResNet'},  # PrototypicalCnnLstmNet,PrototypicalMobileNet
             'PrototypicalResNet_config': {'layers': [1, 1, 1], 'strides': [1, 2, 2], 'inchannel': 52, 'groups': 1, },
             'PrototypicalCnnLstmNet_config': {'in_channel_cnn': 3, 'out_feature_dim_cnn': 128,
@@ -15,64 +15,70 @@ config = {
                                               'num_lstm_layer': 2},
             'PrototypicalMobileNet_config': {'width_mult': 0.5, 'inchannel': 3, },
             'exps': [
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
-                                      'num_domain_linear_flag': None, 'combine': False, },
-                    'style_config': {'class_feature_style': None, 'domain_feature_style': None,
-                                     'pn_style': None}
-                },
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
-                                      'num_domain_linear_flag': None, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': None,
-                                     'pn_style': None}
-                },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
+                #                       'num_domain_linear_flag': None, 'combine': False, },
+                #     'style_config': {'class_feature_style': None, 'domain_feature_style': None,
+                #                      'pn_style': None}
+                # },
                 {
                     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
                                       'num_domain_linear_flag': None, 'combine': False, },
                     'style_config': {'class_feature_style': "style", 'domain_feature_style': None,
                                      'pn_style': "style"}
                 },
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None,
-                                      'num_domain_linear_flag': 16, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': None,
-                                     'pn_style': None}
-                },
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None,
-                                      'num_domain_linear_flag': 16, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
-                                     'pn_style': None}
-                },
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None,
-                                      'num_domain_linear_flag': 16, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
-                                     'pn_style': "gesture"}
-                },
-
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
-                                      'num_domain_linear_flag': 16, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
-                                     'pn_style': None}
-                },
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
-                                      'num_domain_linear_flag': 16, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
-                                     'pn_style': "style"}
-                },
-                {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
-                                      'num_domain_linear_flag': 16, 'combine': False, },
-                    'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
-                                     'pn_style': "gesture"}
-                }
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
+                #                       'num_domain_linear_flag': None, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': None,
+                #                      'pn_style': None}
+                # },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
+                #                       'num_domain_linear_flag': None, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': None,
+                #                      'pn_style': "style"}
+                # },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None,
+                #                       'num_domain_linear_flag': 16, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': None,
+                #                      'pn_style': None}
+                # },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None,
+                #                       'num_domain_linear_flag': 16, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
+                #                      'pn_style': None}
+                # },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None,
+                #                       'num_domain_linear_flag': 16, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
+                #                      'pn_style': "gesture"}
+                # },
+                #
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
+                #                       'num_domain_linear_flag': 16, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
+                #                      'pn_style': None}
+                # },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
+                #                       'num_domain_linear_flag': 16, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
+                #                      'pn_style': "style"}
+                # },
+                # {
+                #     'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
+                #                       'num_domain_linear_flag': 16, 'combine': False, },
+                #     'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
+                #                      'pn_style': "gesture"}
+                # }
             ],
 
-            'max_epochs': 200, 'ex_repeat': 1,
+            'max_epochs': 200, 'ex_repeat': 5,
         },
 
     "csi_301":

@@ -14,3 +14,5 @@ tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril"  --bind_all
 
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril" --port 6006 --bind_all &
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/csi_301" --port 6007 --bind_all &
+
+lsof -i :6006
