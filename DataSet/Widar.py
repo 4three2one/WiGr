@@ -10,8 +10,8 @@ from torch.utils.data import TensorDataset, DataLoader
 from DataSet.CustomDataset import CustomIterDataset
 
 def load_npy_from_bytes(bytes_data):
-    return np.load(io.BytesIO(bytes_data))
-
+    # return np.load(io.BytesIO(bytes_data))
+    return bytes_data
 
 def split_array_bychunk(array, chunksize, include_residual=True):
     len_ = len(array) // chunksize * chunksize
@@ -66,31 +66,33 @@ class Widar(CustomIterDataset):
 
         # self.rm_info_all = np.load(root/"rm_info_all.npy")  # this is the label of the deleted wrong data
 
-        multi_label = np.load(root/"multi_label.npy")
+        multi_label = np.load(root/"multi_label.npy.npz")
         # total number: 98789
-        self.room_label = multi_label["roomid"]  # {1, 2, 3}
-        self.userid = multi_label["userid"]      # {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
-        self.total_samples = len(multi_label)
-        temp_gesture = multi_label["gesture"]    # {1, 2, 3, 4, 6, 9}
+        self.room_label = multi_label["roomid"].astype(int)  # {1, 2, 3}
+        self.userid = multi_label["userid"].astype(int)      # {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
+        self.total_samples = len(multi_label["roomid"])
+        temp_gesture = multi_label["gesture"].astype(int)    # {1, 2, 3, 4, 6, 9}
         for i,data in enumerate(temp_gesture):
             if temp_gesture[i] == 9:
                 temp_gesture[i] = 5
         self.gesture = temp_gesture  # {1, 2, 3, 4, 5, 6}
-        self.location = multi_label["location"]  # {1, 2, 3, 4, 5}
-        self.orientation = multi_label["face_orientation"]  # {1, 2, 3, 4, 5}
-        self.sampleid = multi_label["sampleid"]   # {1, 2, 3, 4, 5}
-        self.receiverid = multi_label["receiverid"]  # {1, 2, 3, 4, 5, 6}
+        self.location = multi_label["location"].astype(int)  # {1, 2, 3, 4, 5}
+        self.orientation = multi_label["face_orientation"].astype(int)  # {1, 2, 3, 4, 5}
+        # self.sampleid = multi_label["sampleid"]   # {1, 2, 3, 4, 5}
+        # self.receiverid = multi_label["receiverid"]  # {1, 2, 3, 4, 5, 6}
 
-        self.f_amp = zipfile.ZipFile(self.root / "amp.zip", mode="r")
-        self.f_pha = zipfile.ZipFile(self.root / "pha.zip", mode="r")
+        # self.f_amp = zipfile.ZipFile(self.root / "amp.zip", mode="r")
+        # self.f_pha = zipfile.ZipFile(self.root / "pha.zip", mode="r")
 
-        self.select = np.ones(self.total_samples, dtype=np.bool)
-        self.room_select = np.ones(self.total_samples, dtype=np.bool)
-        self.user_select = np.ones(self.total_samples, dtype=np.bool)
-        self.loc_select = np.ones(self.total_samples, dtype=np.bool)
-        self.ori_select = np.ones(self.total_samples, dtype=np.bool)
-        self.receiver_select = np.ones(self.total_samples, dtype=np.bool)
-        self.sample_select = np.ones(self.total_samples, dtype=np.bool)
+        self.f_amp=np.load(os.path.join(root,"amp.npy"))
+        self.f_pha=np.load(os.path.join(root,"pha.npy"))
+        self.select = np.ones(self.total_samples, dtype=bool)
+        self.room_select = np.ones(self.total_samples, dtype=bool)
+        self.user_select = np.ones(self.total_samples, dtype=bool)
+        self.loc_select = np.ones(self.total_samples, dtype=bool)
+        self.ori_select = np.ones(self.total_samples, dtype=bool)
+        # self.receiver_select = np.ones(self.total_samples, dtype=np.bool)
+        # self.sample_select = np.ones(self.total_samples, dtype=np.bool)
         index_temp = np.arange(self.total_samples)
 
         if roomid is not None:
@@ -105,12 +107,12 @@ class Widar(CustomIterDataset):
         if orientation is not None:
             self.ori_select = functools.reduce(np.logical_or,[ *[self.orientation == j for j in orientation]])
             self.select = np.logical_and(self.select, self.ori_select)
-        if receiverid is not None:
-            self.receiver_select = functools.reduce(np.logical_or,[ *[self.receiverid == j for j in receiverid]])
-            self.select = np.logical_and(self.select, self.receiver_select)
-        if sampleid is not None:
-            self.sample_select = functools.reduce(np.logical_or, [*[self.sampleid == j for j in sampleid]])
-            self.select = np.logical_and(self.select, self.sample_select)
+        # if receiverid is not None:
+        #     self.receiver_select = functools.reduce(np.logical_or,[ *[self.receiverid == j for j in receiverid]])
+        #     self.select = np.logical_and(self.select, self.receiver_select)
+        # if sampleid is not None:
+        #     self.sample_select = functools.reduce(np.logical_or, [*[self.sampleid == j for j in sampleid]])
+        #     self.select = np.logical_and(self.select, self.sample_select)
 
         self.index = index_temp[self.select]  # the data for a specified task
         np.random.shuffle(self.index)
@@ -118,7 +120,7 @@ class Widar(CustomIterDataset):
         choosed_label = self.gesture[self.index]
         num_sample_per_class = []
         self.sample_index_per_class = []
-        for i in range(1,self.num_class+1):
+        for i in range(0,self.num_class):
             temp = self.index[np.where(choosed_label == i)]
             num_sample_per_class.append(len(temp))
             self.sample_index_per_class.append(temp)
@@ -128,25 +130,25 @@ class Widar(CustomIterDataset):
     def get_item(self, sample_index):
         if self.mode is not None:
             if self.mode == 'phase':
-                pha_sample = load_npy_from_bytes(self.f_pha.read(str(sample_index)))
+                pha_sample =  (self.f_pha.read(str(sample_index)))
                 sample = pha_sample.astype(np.float32)  # shape [time,3,30]
             elif self.mode == 'amplitude':
-                amp_sample = load_npy_from_bytes(self.f_amp.read(str(sample_index)))
+                amp_sample = load_npy_from_bytes(self.f_amp[sample_index])
                 sample = amp_sample.astype(np.float32)  # shape [time,3,30]
             else:
-                amp_sample = load_npy_from_bytes(self.f_amp.read(str(sample_index)))
-                pha_sample = load_npy_from_bytes(self.f_pha.read(str(sample_index)))
+                amp_sample = load_npy_from_bytes(self.f_amp[sample_index])
+                pha_sample = load_npy_from_bytes(self.f_amp[sample_index])
                 amp_sample = amp_sample.astype(np.float32)  # shape [time,3,30]
                 pha_sample = pha_sample.astype(np.float32)  # shape [time,3,30]
                 sample = np.concatenate((amp_sample, pha_sample), axis=2)
         else:
-            amp_sample = load_npy_from_bytes(self.f_amp.read(str(sample_index)))
-            pha_sample = load_npy_from_bytes(self.f_pha.read(str(sample_index)))
+            amp_sample = load_npy_from_bytes(self.f_amp[sample_index])
+            pha_sample = load_npy_from_bytes(self.f_amp[sample_index])
             amp_sample = amp_sample.astype(np.float32)  # shape [time,3,30]
             pha_sample = pha_sample.astype(np.float32)  # shape [time,3,30]
             sample = np.concatenate((amp_sample, pha_sample), axis=2)
 
-        ges_label = self.gesture[sample_index] - 1    # {0,1, 2, 3, 4, 5}
+        ges_label = self.gesture[sample_index]     # {0,1, 2, 3, 4, 5}
         ges_label = torch.tensor(ges_label).type(torch.LongTensor)
 
         if self.data_shape == 'split':
@@ -171,28 +173,34 @@ class Widar(CustomIterDataset):
             else:
                 sample = sample.permute(1, 2, 0).reshape(180, -1)  # shape [3X60, time]
 
-        return sample,ges_label,
+        return sample,ges_label,torch.tensor(1)
 
     def metric_data(self):
         # sampling a batch data and split to supportset and training/testing set
-        datas_data=[]
+        datas_data = []
         datas_ges_label = []
+        query_domain_label = []
 
         supports_data = []
         supports_ges_label = []
+        supports_domain_label = []
         for i in range(self.num_class):
-            temp = self.sample_index_per_class[i][self.batch_idx*self.batch_size:(self.batch_idx+1)*self.batch_size]
-            for j in range(0,self.batch_size-self.num_shot):
-                sample, ges_label = self.get_item(temp[j])
+            temp = self.sample_index_per_class[i][
+                   self.batch_idx * self.batch_size:(self.batch_idx + 1) * self.batch_size]
+            for j in range(0, self.batch_size - self.num_shot):
+                sample, ges_label, domain_label = self.get_item(temp[j])
                 datas_data.append(sample)
                 datas_ges_label.append(ges_label)
-            for k in range(self.batch_size-self.num_shot,self.batch_size):
-                sample, ges_label = self.get_item(temp[k])
+                query_domain_label.append(domain_label)
+            for k in range(self.batch_size - self.num_shot, self.batch_size):
+                sample, ges_label, domain_label = self.get_item(temp[k])
                 supports_data.append(sample)
                 supports_ges_label.append(ges_label)
+                supports_domain_label.append(domain_label)
 
         self.batch_idx += 1
-        return (datas_data,datas_ges_label),(supports_data,supports_ges_label)
+        return (datas_data, datas_ges_label, query_domain_label), (
+        supports_data, supports_ges_label, supports_domain_label)
 
     def get_choose_label(self,id):
         if id == "user":
@@ -222,9 +230,9 @@ class Widar(CustomIterDataset):
     def __len__(self):
         return self.num_batch
 
-    def __del__(self):
-        self.f_amp.close()
-        self.f_pha.close()
+    # def __del__(self):
+    #     self.f_amp.close()
+    #     self.f_pha.close()
 
 
 if __name__ == "__main__":
