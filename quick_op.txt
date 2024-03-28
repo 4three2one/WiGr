@@ -14,6 +14,8 @@ tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril"  --bind_all
 
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril" --port 6006 --bind_all &
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/csi_301-5" --port 6007 --bind_all &
-nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5" --port 6008 --bind_all &
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-new" --port 6009 --bind_all &
 
 lsof -i :6006
+
+watch -n 1 nvidia-smi
