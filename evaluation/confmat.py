@@ -38,18 +38,22 @@ if __name__ == "__main__":
           [0.29516393442622946  ,0.21881720430107526  ,0.2575  ,0.8557692307692307  ,0.2072916666666667  ],
           [0.21830601092896176  ,0.3452150537634408  ,0.21500000000000002  ,0.23017543859649126  ,0.7641509433962265  ]]
     # labels_name = np.array(['Loc1', 'Loc2', 'Loc3', 'Loc4', 'Loc5','Loc6'])
-    labels_name = np.array(['up', 'down', 'left', 'right', 'circle','cross'])
+    # labels_name = np.array(['up', 'down', 'left', 'right', 'circle','cross'])
+    labels_name = np.array(['push', 'slide', 'raise', 'clap', 'circle','fist'])
 
 
     # file = "/data/projs/WiGr/lighting_logs/aril-5/loc-4-Class-style_PN-style_version_13/comfumat_metirc_all.npy"
     file = "/data/projs/WiGr/lighting_logs/csi_301-5/loc-4-Class-style_PN-style_version_7/comfumat_metirc_all.npy"
     file1 = "/data/projs/WiGr/lighting_logs/csi_301-5/loc-3-Class-style_PN-style_version_15/comfumat_metirc_all.npy"
     file2 = "/data/projs/WiGr/lighting_logs/csi_301-5/loc-4-Class-style_PN-style_version_9/comfumat_metirc_all.npy"
+    file22 = "/data/projs/WiGr/lighting_logs/aril-5/loc-3-Class-style_PN-style_version_5/comfumat_metirc_all.npy"
     #
     comfumat_metirc_all2 = np.load(file2)
     comfumat_metirc_all1 = np.load(file1)
     cm = np.load(file)
+    cm = np.load(file22)
     # cm = (comfumat_metirc_all1[200]+comfumat_metirc_all2[300])/2
-    plot_confusion_matrix((cm[200]+comfumat_metirc_all1[300]++comfumat_metirc_all2[200])/3, labels_name, "In-Domain")
+    # plot_confusion_matrix((cm[200]+comfumat_metirc_all1[300]++comfumat_metirc_all2[200])/3, labels_name, "In-Domain")
+    plot_confusion_matrix((cm[200]), labels_name, "In-Domain")
     # plt.savefig('/HAR_cm.png', format='png')
     # plt.show()

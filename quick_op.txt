@@ -18,4 +18,6 @@ nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-new" --port 6
 
 lsof -i :6006
 
+lsof -i :6006 | awk 'NR>1 {print $2}' | xargs kill
+
 watch -n 1 nvidia-smi

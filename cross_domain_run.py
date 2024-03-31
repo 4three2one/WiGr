@@ -135,7 +135,7 @@ def run(args):
 
         print(args)
         print(type(args))
-        
+        tb_logger.close()
         # labels_name = np.array(['user1', 'user2', 'user3', 'user4', 'user5','ss'])
         # confmat.plot_confusion_matrix(cm,labels_name,title="test")
 
@@ -309,15 +309,19 @@ if __name__ == '__main__':
         for j in range(ex_repeat):
             oris=[1,2,3,4,5]
             users=[1,2,3]
-
+            locs=[1,2,3,4,5]
             ori_li=[list(pair) for pair in itertools.combinations(oris,1)]
             user_li=[list(pair) for pair in itertools.combinations(users,1)]
+            loc_li=[list(pair) for pair in itertools.combinations(locs,1)]
+
             for ori in ori_li:
-                for user in user_li:
-                    args.train_userid=user
-                    args.train_orientation=ori
-                    for shot in [1,2,3,4]:
-                        args.num_shot=shot
-                        run(args)
+                # for user in user_li:
+                    for loc in loc_li:
+                        # args.train_userid=user
+                        args.train_orientation=ori
+                        args.train_location=loc
+                        for shot in [1,2,3,4]:
+                            args.num_shot=shot
+                            run(args)
         # print(args)
 

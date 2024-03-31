@@ -90,7 +90,7 @@ config = {
                                    'receiverid': None,
                                    'sampleid': None, },
             'data_sample_config': {'root': "/data/wifi/WiGr", 'dataset': "csi_301", 'data_shape': '1D',
-                                   'chunk_size': 50, 'num_shot': 3, 'batch_size': 5, 'mode': 'amplitude',
+                                   'chunk_size': 50, 'num_shot': 1, 'batch_size': 5, 'mode': 'amplitude',
                                    'align': True},
             'encoder_config': {'model_name': 'PrototypicalResNet'},  # PrototypicalCnnLstmNet,PrototypicalMobileNet
             'PrototypicalResNet_config': {'layers': [1, 1, 1], 'strides': [1, 2, 2], 'inchannel': 342, 'groups': 3, },
@@ -119,12 +119,12 @@ config = {
                 }
             ],
             'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None, 'combine': False, },
-            'max_epochs': 300, 'ex_repeat': 1,
+            'max_epochs': 300, 'ex_repeat': 10,
         },
 
     "widar":
         {
-            'source_data_config': {'roomid': [1], 'userid': [1], 'location': None, 'orientation': [1],
+            'source_data_config': {'roomid': [1], 'userid': None, 'location': None, 'orientation': [2],
                                    'receiverid': [1],
                                    'sampleid': None, },
             'target_data_config': {'roomid': [1], 'userid': None, 'location': None, 'orientation': None,
