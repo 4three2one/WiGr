@@ -119,7 +119,7 @@ config = {
                 }
             ],
             'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None, 'combine': False, },
-            'max_epochs': 300, 'ex_repeat': 10,
+            'max_epochs': 300, 'ex_repeat': 2,
         },
 
     "widar":

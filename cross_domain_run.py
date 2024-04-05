@@ -5,7 +5,7 @@ import argparse
 from collections import defaultdict
 import models
 import DataSet
-import pytorch_lightning as pl
+
 from pathlib import Path
 import torch.utils.data as tdata
 import matplotlib as plt
@@ -16,6 +16,8 @@ from evaluation import confmat
 from parameter_config import config
 from  pytorch_lightning.loggers.tensorboard import TensorBoardLogger
 import itertools
+import gc
+
 def run(args):
     # torch.autograd.set_detect_anomaly(True)
     torch.cuda.empty_cache()
@@ -102,7 +104,7 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        exp_name=f"{args.dataset}-{args.batch_size}-new"
+        exp_name=f"{args.dataset}-{args.batch_size}-s305"
         if not os.path.exists(os.path.join(args.log_dir,exp_name)):
             os.makedirs(os.path.join(args.log_dir,exp_name))
         for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
@@ -115,8 +117,14 @@ def run(args):
             max_version=0
         else:
             max_version=max(existing_versions)+1
-
-        version =f"{args.cross_type}-{args.num_shot}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
+        if args.dataset == "widar":
+            if args.cross_type=="loc":
+                version =f"{args.cross_type}-s{args.num_shot}-ori{args.train_orientation}-u{args.train_userid}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
+            elif args.cross_type == "user":
+                version =f"{args.cross_type}-s{args.num_shot}-ori{args.train_orientation}-loc{args.train_location}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
+            else:
+                return
+        import pytorch_lightning as pl
         tb_logger = TensorBoardLogger(save_dir=args.log_dir,name=exp_name,version=version)
         trainer = pl.Trainer(callbacks=[checkpoint_callback,],log_every_n_steps=1,max_epochs=args.max_epochs,gpus=1,logger=tb_logger )   # precision = 16
         trainer.fit(model,tr_loader,te_loader)
@@ -136,9 +144,50 @@ def run(args):
         print(args)
         print(type(args))
         tb_logger.close()
+
+        del model
+        del tr_loader
+        del te_loader
+        del tb_logger
+        del trainer
+        del pl
+        gc.collect()
+        # torch.cuda.empty_cache()
         # labels_name = np.array(['user1', 'user2', 'user3', 'user4', 'user5','ss'])
         # confmat.plot_confusion_matrix(cm,labels_name,title="test")
 
+
+def multi_exps_widar(args,ex_repeat):
+    oris = [1, 2, 3, 4, 5]
+    users = [1, 2, 3]
+    locs = [1, 2, 3, 4, 5]
+    shots = [3]
+
+    ori_li = [list(pair) for pair in itertools.combinations(oris, 1)]
+    user_li = [list(pair) for pair in itertools.combinations(users, 1)]
+    loc_li = [list(pair) for pair in itertools.combinations(locs, 1)]
+    if args.cross_type == "loc":
+        for ori in ori_li:
+            for user in user_li:
+                for shot in shots:
+                    args.train_orientation = ori
+                    args.train_userid=user
+                    args.num_shot = shot
+                    for j in range(ex_repeat):
+                        run(args)
+    elif args.cross_type == "user":
+        for ori in ori_li:
+            for loc in loc_li:
+                for shot in shots:
+                    args.train_orientation = ori
+                    args.train_location = loc
+                    args.num_shot = shot
+                    for j in range(ex_repeat):
+                        # print(111)
+                        run(args)
+    else:
+        print("Wrong cross_type")
+        return
 
 if __name__ == '__main__':
 
@@ -305,23 +354,7 @@ if __name__ == '__main__':
         print("Experiment Setting Config:{}".format(setting))
 
         #代码调整  class_feature_style  domain_feature_style
-
-        for j in range(ex_repeat):
-            oris=[1,2,3,4,5]
-            users=[1,2,3]
-            locs=[1,2,3,4,5]
-            ori_li=[list(pair) for pair in itertools.combinations(oris,1)]
-            user_li=[list(pair) for pair in itertools.combinations(users,1)]
-            loc_li=[list(pair) for pair in itertools.combinations(locs,1)]
-
-            for ori in ori_li:
-                # for user in user_li:
-                    for loc in loc_li:
-                        # args.train_userid=user
-                        args.train_orientation=ori
-                        args.train_location=loc
-                        for shot in [1,2,3,4]:
-                            args.num_shot=shot
-                            run(args)
+        if args.dataset == "widar":
+            multi_exps_widar(args,ex_repeat)
         # print(args)
 
