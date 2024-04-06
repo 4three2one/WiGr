@@ -47,11 +47,15 @@ if __name__ == "__main__":
     file1 = "/data/projs/WiGr/lighting_logs/csi_301-5/loc-3-Class-style_PN-style_version_15/comfumat_metirc_all.npy"
     file2 = "/data/projs/WiGr/lighting_logs/csi_301-5/loc-4-Class-style_PN-style_version_9/comfumat_metirc_all.npy"
     file22 = "/data/projs/WiGr/lighting_logs/aril-5/loc-3-Class-style_PN-style_version_5/comfumat_metirc_all.npy"
-    #
-    comfumat_metirc_all2 = np.load(file2)
-    comfumat_metirc_all1 = np.load(file1)
-    cm = np.load(file)
-    cm = np.load(file22)
+    file1 = "/data/projs/WiGr/lighting_logs/widar-5-s305/user-s3-ori[1]-loc[2]-amp&pha-Class-style_PN-style_version_9/comfumat_metirc_all.npy"
+    file2 = "/data/projs/WiGr/lighting_logs/widar-s3-05/user-s3-ori[1]-loc[2]-amp&pha-Class-style_PN-style_version_5/comfumat_metirc_all.npy"
+    # comfumat_metirc_all2 = np.load(file2)
+    # comfumat_metirc_all1 = np.load(file1)
+    # cm = np.load(file)
+    cm1 = np.load(file1)
+    cm2 = np.load(file2)
+    cm=(cm1+cm2)/2
+
     # cm = (comfumat_metirc_all1[200]+comfumat_metirc_all2[300])/2
     # plot_confusion_matrix((cm[200]+comfumat_metirc_all1[300]++comfumat_metirc_all2[200])/3, labels_name, "In-Domain")
     plot_confusion_matrix((cm[200]), labels_name, "In-Domain")

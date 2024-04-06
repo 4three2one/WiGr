@@ -7,15 +7,16 @@ http://172.20.32.251:6006/#timeseries
 
 
 cd /data/projs/WiGr/lighting_logs
+ll /data/projs/WiGr/lighting_logs
 
 
 tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril"  --bind_all
 
 
-nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril" --port 6006 --bind_all &
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-s1-05" --port 6006 --bind_all &
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/csi_301-5" --port 6007 --bind_all &
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-05" --port 6009 --bind_all &
-nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-s305" --port 6010 --bind_all &
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-s1-05" --port 6010 --bind_all &
 
 lsof -i :6006
 
