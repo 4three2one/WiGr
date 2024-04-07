@@ -83,14 +83,14 @@ config = {
 
     "csi_301":
         {
-            'source_data_config': {'roomid': [1], 'userid': [1], 'location': None, 'orientation': None,
+            'source_data_config': {'roomid': None, 'userid': None, 'location': None, 'orientation': None,
                                    'receiverid': None,
                                    'sampleid': None, },
             'target_data_config': {'roomid': [1], 'userid': None, 'location': None, 'orientation': None,
                                    'receiverid': None,
                                    'sampleid': None, },
             'data_sample_config': {'root': "/data/wifi/WiGr", 'dataset': "csi_301", 'data_shape': '1D',
-                                   'chunk_size': 50, 'num_shot': 1, 'batch_size': 5, 'mode': 'amplitude',
+                                   'chunk_size': 50, 'num_shot': 2, 'batch_size': 5, 'mode': 'amplitude',
                                    'align': True},
             'encoder_config': {'model_name': 'PrototypicalResNet'},  # PrototypicalCnnLstmNet,PrototypicalMobileNet
             'PrototypicalResNet_config': {'layers': [1, 1, 1], 'strides': [1, 2, 2], 'inchannel': 342, 'groups': 3, },
