@@ -90,10 +90,10 @@ config = {
                                    'receiverid': None,
                                    'sampleid': None, },
             'data_sample_config': {'root': "/data/wifi/WiGr", 'dataset': "csi_301", 'data_shape': '1D',
-                                   'chunk_size': 50, 'num_shot': 2, 'batch_size': 5, 'mode': 'amplitude',
+                                   'chunk_size': 50, 'num_shot': 1, 'batch_size': 5, 'mode': 'amp&pha',
                                    'align': True},
             'encoder_config': {'model_name': 'PrototypicalResNet'},  # PrototypicalCnnLstmNet,PrototypicalMobileNet
-            'PrototypicalResNet_config': {'layers': [1, 1, 1], 'strides': [1, 2, 2], 'inchannel': 342, 'groups': 3, },
+            'PrototypicalResNet_config': {'layers': [1, 1, 1], 'strides': [1, 2, 2], 'inchannel': 684, 'groups': 3, },
             'PrototypicalCnnLstmNet_config': {'in_channel_cnn': 3, 'out_feature_dim_cnn': 256,
                                               'out_feature_dim_lstm': 512,
                                               'num_lstm_layer': 3},
@@ -119,7 +119,7 @@ config = {
                 }
             ],
             'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None, 'combine': False, },
-            'max_epochs': 200, 'ex_repeat': 2,
+            'max_epochs': 150, 'ex_repeat': 2,
         },
 
     "widar":
@@ -131,7 +131,7 @@ config = {
                                    'receiverid': None,
                                    'sampleid': None, },
             'data_sample_config': {'root': "/data/wifi/WiGr", 'dataset': "widar", 'data_shape': '1D',
-                                   'chunk_size': 50, 'num_shot': 1, 'batch_size': 5, 'mode': 'amp&pha',
+                                   'chunk_size': 50, 'num_shot': 3, 'batch_size': 5, 'mode': 'amp&pha',
                                    'align': True},
             'encoder_config': {'model_name': 'PrototypicalResNet'},  # PrototypicalCnnLstmNet,PrototypicalMobileNet
             'PrototypicalResNet_config': {'layers': [1, 1, 1], 'strides': [1, 2, 2], 'inchannel': 180, 'groups': 3, },
@@ -160,7 +160,7 @@ config = {
                 }
             ],
             'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None, 'combine': False, },
-            'max_epochs': 200, 'ex_repeat': 2,
+            'max_epochs': 150, 'ex_repeat': 2,
         },
     #
     # {

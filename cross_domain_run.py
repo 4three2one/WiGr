@@ -104,7 +104,7 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        exp_name=f"test-{args.dataset}-s{args.num_shot}"
+        exp_name=f"08-{args.dataset}-s{args.num_shot}"
         if not os.path.exists(os.path.join(args.log_dir,exp_name)):
             os.makedirs(os.path.join(args.log_dir,exp_name))
         for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
@@ -175,7 +175,7 @@ def multi_exps_widar(args,ex_repeat):
     oris = [1, 2, 3, 4, 5]
     users = [1, 2, 3]
     locs = [1, 2, 3, 4, 5]
-    # shots = [3]
+    shots = [1,2,3]
 
     ori_li = [list(pair) for pair in itertools.combinations(oris, 1)]
     user_li = [list(pair) for pair in itertools.combinations(users, 1)]
@@ -183,19 +183,19 @@ def multi_exps_widar(args,ex_repeat):
     if args.cross_type == "loc":
         for ori in ori_li:
             for user in user_li:
-                # for shot in shots:
+                for shot in shots:
                     args.train_orientation = ori
                     args.train_userid=user
-                    # args.num_shot = shot
+                    args.num_shot = shot
                     for j in range(ex_repeat):
                         run(args)
     elif args.cross_type == "user":
         for ori in ori_li:
             for loc in loc_li:
-                # for shot in shots:
+                for shot in shots:
                     args.train_orientation = ori
                     args.train_location = loc
-                    # args.num_shot = shot
+                    args.num_shot = shot
                     for j in range(ex_repeat):
                         # print(111)
                         run(args)
@@ -213,26 +213,27 @@ def multi_exps_csida(args,ex_repeat):
     #     1:{0,1,2},
     # }
     # locs = [0,1]
-    # shots = [3]
+    shots = [1,2,3]
     user_li = [list(pair) for pair in itertools.combinations(users, 1)]
     # loc_li = [list(pair) for pair in itertools.combinations(locs, 1)]
     room_li = [list(pair) for pair in itertools.combinations(rooms, 1)]
     if args.cross_type == "loc":
             for user in user_li:
                 for room in room_li:
-                # for shot in shots:
-                    args.train_roomid = room
-                    args.train_userid=user
-                    # if 0 in room:
-                    #     locs=[0,1,2]
-                    # else:
-                    #     locs = [0, 1]
-                    args.train_location=None
-                    for j in range(ex_repeat):
-                        try:
-                            run(args)
-                        except:
-                            print("Error---->room",str(room),",user",str(user))
+                    for shot in shots:
+                        args.train_roomid = room
+                        args.train_userid=user
+                        # if 0 in room:
+                        #     locs=[0,1,2]
+                        # else:
+                        #     locs = [0, 1]
+                        args.num_shot = shot
+                        args.train_location=None
+                        for j in range(ex_repeat):
+                            try:
+                                run(args)
+                            except:
+                                print("Error---->room",str(room),",user",str(user))
     elif args.cross_type == "user":
         for room in room_li:
             if 0 in room:
@@ -243,10 +244,11 @@ def multi_exps_csida(args,ex_repeat):
             for loc in loc_li:
                     args.train_roomid = room
                     args.train_location = loc
-                    # args.num_shot = shot
-                    for j in range(ex_repeat):
-                        # print(111)
-                        run(args)
+                    for shot in shots:
+                        args.num_shot = shot
+                        for j in range(ex_repeat):
+                            # print(111)
+                            run(args)
 
     elif args.cross_type == "room":
         for room in room_li:
