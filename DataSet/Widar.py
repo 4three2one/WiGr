@@ -130,7 +130,8 @@ class Widar(CustomIterDataset):
     def get_item(self, sample_index):
         if self.mode is not None:
             if self.mode == 'phase':
-                pha_sample =  (self.f_pha.read(str(sample_index)))
+                # pha_sample =  (self.f_pha.read(str(sample_index)))
+                pha_sample = load_npy_from_bytes(self.f_pha[sample_index])
                 sample = pha_sample.astype(np.float32)  # shape [time,3,30]
             elif self.mode == 'amplitude':
                 amp_sample = load_npy_from_bytes(self.f_amp[sample_index])

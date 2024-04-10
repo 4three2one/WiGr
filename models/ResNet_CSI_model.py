@@ -109,7 +109,7 @@ class ChannelAttention(nn.Module):
 
 class ResNet_CSI(nn.Module):
 
-    def __init__(self, block, layers, strides,  inchannel, groups):
+    def __init__(self, block, layers, strides,  inchannel, groups,use_attention):
         # block can choose basicblock or bottleneck ; layers means the layer1,layer2,layer3,layer4
         # (how many sublayers to stack); inchannel is the input channels ; activity_num is the categories; groups is
         # conv group
@@ -144,6 +144,7 @@ class ResNet_CSI(nn.Module):
         self.channel_attention1 = ChannelAttention(inchannel)
         self.channel_attention2 = ChannelAttention(self.inplanes)
         self.channel_attention3 = ChannelAttention(self.inplanes*2 * block.expansion,)
+        self.use_attention= use_attention
 
     def _make_layer(self, block, planes, num_layer, stride=1):
         downsample = None
@@ -162,15 +163,19 @@ class ResNet_CSI(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        x = self.channel_attention1(x)
+        if self.use_attention:
+            # print("use attention")
+            x = self.channel_attention1(x)
         x = self.conv1(x)
-        x=self.channel_attention2(x)
+        if self.use_attention:
+            x=self.channel_attention2(x)
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
         c = self.layer(x)
         feaure = torch.squeeze(self.feature(c))
-        feaure = self.channel_attention3(feaure)
+        if self.use_attention:
+            feaure = self.channel_attention3(feaure)
         #xjw
         feaure = self.classifier(feaure)
         feaure = feaure.view(feaure.size(0), -1)

@@ -54,7 +54,9 @@ class PrototypicalResNet(pl.LightningModule):
     def __init__(self,layers,strides,inchannel=52,groups=1,align=False,
                  metric_method="Euclidean",k_shot=1,num_class_linear_flag=None,num_domain_linear_flag=None,combine=False, class_feature_style=None,
                                   domain_feature_style=None,
-                                  pn_style=None,):
+                                  pn_style=None,
+                                  use_attention=True,
+                 ):
         """
         :param layers: this is a list, which define the number of types of layers
         :param strides:  the convolution strides of layers
@@ -82,7 +84,7 @@ class PrototypicalResNet(pl.LightningModule):
 
         self.num_domain_linear_flag = num_domain_linear_flag  # only using when we add the linear classifier
 
-        self.ResNet_encoder = ResNet_CSI(block=BasicBlock, layers=self.layers,strides=self.strides, inchannel=self.inchannel,groups=self.groups) # output shape [feature_dim, length]
+        self.ResNet_encoder = ResNet_CSI(block=BasicBlock, layers=self.layers,strides=self.strides, inchannel=self.inchannel,groups=self.groups,use_attention=use_attention) # output shape [feature_dim, length]
         self.feature_dim = self.ResNet_encoder.out_dim
 
         if self.num_class_linear_flag is not None:

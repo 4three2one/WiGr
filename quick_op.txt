@@ -13,15 +13,32 @@ ll /data/projs/WiGr/lighting_logs
 tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril"  --bind_all
 
 
-nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-s1-05" --port 6006 --bind_all &
-nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/csi_301-5" --port 6007 --bind_all &
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-10" --port 6006 --bind_all &
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/08-widar-s2" --port 6007 --bind_all &
+``nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/08-widar-s3" --port 6008 --bind_all &`
+
+
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar" --port 6007 --bind_all &
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-5-05" --port 6009 --bind_all &
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-s1-05" --port 6010 --bind_all &
 
 lsof -i :6006
 
 lsof -i :6006 | awk 'NR>1 {print $2}' | xargs kill
+lsof -i :6007 | awk 'NR>1 {print $2}' | xargs kill
+lsof -i :6008 | awk 'NR>1 {print $2}' | xargs kill
 lsof -i :6009 | awk 'NR>1 {print $2}' | xargs kill
 
 watch -n 1 nvidia-smi
 watch -n 1 free -h
+
+0.9167
+0.9167
+0.9306
+0.9033
+0.9119
+0.8889
+0.9028
+0.9025
+0.875
+0.9171

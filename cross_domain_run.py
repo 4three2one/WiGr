@@ -58,6 +58,7 @@ def run(args):
                                   class_feature_style=args.class_feature_style,
                                   domain_feature_style=args.domain_feature_style,
                                   pn_style=args.pn_style,
+                                          use_attention=args.use_attention,
                                   )
     elif args.model_name == 'PrototypicalCnnLstmNet':
         if args.data_shape == 'split':
@@ -104,7 +105,7 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        exp_name=f"08-{args.dataset}-s{args.num_shot}"
+        exp_name=f"{args.dataset}-10"
         if not os.path.exists(os.path.join(args.log_dir,exp_name)):
             os.makedirs(os.path.join(args.log_dir,exp_name))
         for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
@@ -119,25 +120,27 @@ def run(args):
             max_version=max(existing_versions)+1
         if args.dataset == "widar":
             if args.cross_type=="loc":
-                version =f"{args.cross_type}-s{args.num_shot}-ori{args.train_orientation}-u{args.train_userid}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
+                fixed =f"ori{args.train_orientation}-user{args.train_userid}"
             elif args.cross_type == "user":
-                version =f"{args.cross_type}-s{args.num_shot}-ori{args.train_orientation}-loc{args.train_location}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
+                fixed =f"ori{args.train_orientation}-loc{args.train_location}"
             else:
                 return
 
         if args.dataset == "csi_301":
             if args.cross_type=="loc":
-                version =f"{args.cross_type}-s{args.num_shot}-room{args.train_roomid}-user{args.train_userid}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
+                fixed =f"room{args.train_roomid}-user{args.train_userid}"
             elif args.cross_type == "user":
-                version =f"{args.cross_type}-s{args.num_shot}-room{args.train_roomid}-loc{args.train_location}-{args.mode}-"+ (f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "" )+ ( f"PN-{args.pn_style}_" if args.pn_style else "") +f"version_{str(max_version)}"
-
+                fixed =f"room{args.train_roomid}-loc{args.train_location}"
             elif args.cross_type == "room":
-                version = f"{args.cross_type}-s{args.num_shot}-ori{args.train_userid}-loc{args.train_location}-{args.mode}-" + (
-                    f"Class-{args.class_feature_style}_" if args.num_class_linear_flag else "") + (
-                              f"PN-{args.pn_style}_" if args.pn_style else "") + f"version_{str(max_version)}"
+                fixed = f"ori{args.train_userid}-loc{args.train_location}"
             else:
                 return
+        prefix=(f"{args.cross_type}-d{args.metric_method}-s{args.num_shot}--{args.mode}-{args.use_attention}"+(f"-Class-{args.class_feature_style}_" if args.num_class_linear_flag else "") + (
+            f"PN-{args.pn_style}_" if args.pn_style else ""))
 
+        suffix=f"-version_{str(max_version)}"
+        prefix=prefix+fixed
+        version=prefix+suffix
         import pytorch_lightning as pl
         tb_logger = TensorBoardLogger(save_dir=args.log_dir,name=exp_name,version=version)
         trainer = pl.Trainer(callbacks=[checkpoint_callback,],log_every_n_steps=1,max_epochs=args.max_epochs,gpus=1,logger=tb_logger )   # precision = 16
@@ -176,6 +179,7 @@ def multi_exps_widar(args,ex_repeat):
     users = [1, 2, 3]
     locs = [1, 2, 3, 4, 5]
     shots = [1,2,3]
+    shots = [1]
 
     ori_li = [list(pair) for pair in itertools.combinations(oris, 1)]
     user_li = [list(pair) for pair in itertools.combinations(users, 1)]
@@ -188,7 +192,11 @@ def multi_exps_widar(args,ex_repeat):
                     args.train_userid=user
                     args.num_shot = shot
                     for j in range(ex_repeat):
-                        run(args)
+                        try:
+                            print(args)
+                            run(args)
+                        except:
+                            print("#error", args)
     elif args.cross_type == "user":
         for ori in ori_li:
             for loc in loc_li:
@@ -198,7 +206,12 @@ def multi_exps_widar(args,ex_repeat):
                     args.num_shot = shot
                     for j in range(ex_repeat):
                         # print(111)
-                        run(args)
+                        try:
+                            print(args)
+                            run(args)
+                        except:
+                            print("#error",args)
+                            pass
     else:
         print("Wrong cross_type")
         return
@@ -426,6 +439,7 @@ if __name__ == '__main__':
         metric_config = exp['metric_config']
         style_config = exp['style_config']
         args.metric_method = metric_config['metric_method']
+        args.use_attention = metric_config['use_attention']
         args.num_class_linear_flag = metric_config['num_class_linear_flag']
         args.num_domain_linear_flag = metric_config['num_domain_linear_flag']
         args.combine = metric_config['combine']
@@ -434,7 +448,7 @@ if __name__ == '__main__':
         args.domain_feature_style = style_config['domain_feature_style']
         args.pn_style = style_config['pn_style']
 
-        print("Experiment Setting Config:{}".format(setting))
+        # print("Experiment Setting Config:{}".format(setting))
 
         #代码调整  class_feature_style  domain_feature_style
         if args.dataset == "widar":

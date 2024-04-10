@@ -153,13 +153,30 @@ config = {
                 #                      'pn_style': None}
                 # },
                 {
-                    'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': 6,
-                                      'num_domain_linear_flag': None, 'combine': False, },
+                    'metric_config': {'metric_method': 'cosine', 'num_class_linear_flag': 6,
+                                      'num_domain_linear_flag': None, 'combine': False, 'use_attention': True,},
                     'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
                                      'pn_style': "style"}
+                },
+{
+                    'metric_config': {'metric_method': 'cosine', 'num_class_linear_flag': 6,
+                                      'num_domain_linear_flag': None, 'combine': False, 'use_attention': False,},
+                    'style_config': {'class_feature_style': "style", 'domain_feature_style': "gesture",
+                                     'pn_style': "style"}
+                },
+{
+                    'metric_config': {'metric_method': 'cosine', 'num_class_linear_flag': 6,
+                                      'num_domain_linear_flag': None, 'combine': False, 'use_attention': True,},
+                    'style_config': {'class_feature_style': None, 'domain_feature_style': "gesture",
+                                     'pn_style': None}
+                },
+                {
+                    'metric_config': {'metric_method': 'cosine', 'num_class_linear_flag': 6,
+                                      'num_domain_linear_flag': None, 'combine': False, 'use_attention': False,},
+                    'style_config': {'class_feature_style': None, 'domain_feature_style': "gesture",
+                                     'pn_style': None}
                 }
             ],
-            'metric_config': {'metric_method': 'Euclidean', 'num_class_linear_flag': None, 'combine': False, },
             'max_epochs': 150, 'ex_repeat': 2,
         },
     #

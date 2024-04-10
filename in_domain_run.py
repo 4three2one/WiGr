@@ -15,7 +15,7 @@ from evaluation import confmat
 from parameter_config import config
 
 
-def run(args,setting):
+def run(args):
     # torch.autograd.set_detect_anomaly(True)
     torch.cuda.empty_cache()
 
@@ -42,8 +42,8 @@ def run(args,setting):
     train_set,validate_set=torch.utils.data.random_split(source_data,[train_size,validate_size])
     # print(train_set,validate_set)
 
-    tr_loader = DataLoader(dataset=train_set,collate_fn=lambda x:x)
-    te_loader = DataLoader(dataset=validate_set, collate_fn=lambda x:x)
+    tr_loader = DataLoader(dataset=train_set)
+    te_loader = DataLoader(dataset=validate_set)
 
     data_model_match = True  # Whether the data format matches the model
     if args.model_name == 'PrototypicalResNet':
@@ -120,43 +120,55 @@ def run(args,setting):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='WiFi CSI gesture sensing cross_domain experiment')
+    parser = argparse.ArgumentParser(description='WiGr cross_domain experiment')
 
     parser.add_argument('--train_roomid', default=None,
-                        help="the chosen rooms that the data selected from. Widar:[1,2,3]; Aril:useless; CSI_301: [0,1]")
+                        help="Setting the room (domain) configuration: Widar:[1,2,3]; Aril:useless; CSI_301: [0,1]")
     parser.add_argument('--train_userid', default=None,
-                        help="the chosen users that the data selected from. Widar:1-17; Aril: useless; CSI_301: 0-4")
+                        help="Setting the user (domain) configuration: Widar:1-17; Aril: useless; CSI_301: 0-4")
     parser.add_argument('--train_location', default=None,
-                        help="the chosen locations that the data selected from. Widar:1-5; Aril: 1-16; CSI_301: 0-1/2")
+                        help="Setting the location (domain) configuration: Widar:1-5; Aril: 1-16; CSI_301: 0-1/2")
     parser.add_argument('--train_orientation',  default=None,
-                        help="the chosen orientations that the data selected from. Widar:1-5; Aril: useless; CSI_301: useless")
+                        help="Setting the orientation (domain) configuration: Widar:1-5; Aril: useless; CSI_301:useless")
     parser.add_argument('--train_receiverid', default=None,
-                        help="the chosen receivers that the data selected from. Widar:1-6; Aril: useless; CSI_301: useless")
+                        help="Selecting the Receiver: Widar:1-6; Aril: useless; CSI_301: useless")
     parser.add_argument('--train_sampleid', default=None,
-                        help="the chosen samples that the data selected from. Widar:1-5; Aril: useless; CSI_301: useless")
+                        help="Selecting samples: Widar:1-5; Aril: useless; CSI_301: useless")
 
     parser.add_argument('--test_roomid',  default=None,
-                        help="the chosen rooms that the data selected from. Widar:[1,2,3]; Aril:useless; CSI_301: [0,1]")
+                        help="Setting the room (domain) configuration: Widar:[1,2,3]; Aril:useless; CSI_301: [0,1]")
     parser.add_argument('--test_userid',  default=None,
-                        help="the chosen users that the data selected from. Widar:1-17; Aril: useless; CSI_301: 0-4")
+                        help="Setting the user (domain) configuration: Widar:1-17; Aril: useless; CSI_301: 0-4")
     parser.add_argument('--test_location', default=None,
-                        help="the chosen locations that the data selected from. Widar:1-5; Aril: 1-16; CSI_301: 0-1/2")
+                        help="Setting the location (domain) configuration: Widar:1-5; Aril: 1-16; CSI_301: 0-1/2")
     parser.add_argument('--test_orientation',  default=None,
-                        help="the chosen orientations that the data selected from. Widar:1-5; Aril: useless; CSI_301: useless")
+                        help="Setting the orientation (domain) configuration: Widar:1-5; Aril: useless; CSI_301:useless")
     parser.add_argument('--test_receiverid',  default=None,
-                        help="the chosen receivers that the data selected from. Widar:1-6; Aril: useless; CSI_301: useless")
+                        help="Selecting the Receiver: Widar:1-6; Aril: useless; CSI_301: useless")
     parser.add_argument('--test_sampleid', default=None,
-                        help="the chosen samples that the data selected from. Widar:1-5; Aril: useless; CSI_301: useless")
+                        help="Selecting samples: Widar:1-5; Aril: useless; CSI_301: useless")
 
-    parser.add_argument('--root', default="F:/Widar3.0ReleaseData/np_f_denoise",
-                        help="the storage path of datasets: Widar:F:/Widar3.0ReleaseData/np_f_denoise; ARIL,  the path is : ../Datasets")
-    parser.add_argument('--dataset', default=None, help="the dataset name: aril,csi_301,widar")
-    parser.add_argument('--data_shape', default=False, help="the data shape: 1D, 2D, split")
+    parser.add_argument('--root', default="/your/data/path",
+                        help="datasets path")
+    parser.add_argument('--log_dir', default="./lighting_logs",
+                        help="log path")
+    parser.add_argument('--dataset', required=True,
+                        choices=['aril', 'csi_301', 'widar'],
+                        help="the dataset name: aril,csi_301,widar")
+    # parser.add_argument('--cross_type', required=True,
+    #                     choices=['loc', 'user', 'env','ori','rx'],
+    #                     help="the dataset name: aril,csi_301,widar")
+
+    parser.add_argument('--data_shape', default=False,
+                        help="the data shape: 1D, 2D, split for the three different models")
     parser.add_argument('--chunk_size', default=None,
-                        help="if we using LSTM model, we can cut the time series into pices, the chunck size is the length of each pice.")
-    parser.add_argument('--num_shot', default=None, help="the number of samples in support set of each class.")
-    parser.add_argument('--batch_size', default=None, help="how much samples each class in one batch")
-    parser.add_argument('--mode', default='amplitude', help="phase,amplitude,None; useless in aril.")
+                        help="setting the chunk size when using the 'split' data shape")
+    parser.add_argument('--num_shot', default=None,
+                        help="the number of samples in support set of each class.")
+    parser.add_argument('--batch_size', default=None,
+                        help="how much samples each class in one batch")
+    parser.add_argument('--mode', default='amplitude',
+                        help="phase,amplitude,None; useless in aril.")
     parser.add_argument('--align', default=False,
                         help="the series has fixed length or not")
 
@@ -190,73 +202,88 @@ if __name__ == '__main__':
                         help="metric_method")
     parser.add_argument('--num_class_linear_flag', default=None,
                         help="the number of categories and the flag of using linear or not")
+    #xjw
+    parser.add_argument('--num_domain_linear_flag', default=None,
+                        help="the number of categories and the flag of using linear or not")
+
     parser.add_argument('--combine', default=False,
                         help="combine linear method with metric or not")
 
     parser.add_argument('--max_epochs', default=None, help="the max epoches")
 
+    parser.add_argument('--class_feature_style', default=None, help="the max epoches")
+    parser.add_argument('--domain_feature_style', default=None, help="the max epoches")
+    parser.add_argument('--pn_style', default=None, help="the max epoches")
+
     args = parser.parse_args()
 
-    for i,setting in enumerate(config):
-        source_data_config = setting['source_data_config']
-        target_data_config = setting['target_data_config']
-        data_sample_config = setting['data_sample_config']
-        encoder_config = setting['encoder_config']
-        PrototypicalResNet_config = setting['PrototypicalResNet_config']
-        PrototypicalCnnLstmNet_config = setting['PrototypicalCnnLstmNet_config']
-        PrototypicalMobileNet_config = setting['PrototypicalMobileNet_config']
-        metric_config = setting['metric_config']
-        max_epochs = setting['max_epochs']
+    setting =config[args.dataset]
+    source_data_config = setting['source_data_config']
+    target_data_config = setting['target_data_config']
+    data_sample_config = setting['data_sample_config']
+    encoder_config = setting['encoder_config']
+    PrototypicalResNet_config = setting['PrototypicalResNet_config']
+    PrototypicalCnnLstmNet_config = setting['PrototypicalCnnLstmNet_config']
+    PrototypicalMobileNet_config = setting['PrototypicalMobileNet_config']
+    max_epochs = setting['max_epochs']
 
-        args.train_roomid = source_data_config['roomid']
-        args.train_userid = source_data_config['userid']
-        args.train_location = source_data_config['location']
-        args.train_orientation = source_data_config['orientation']
-        args.train_receiverid = source_data_config['receiverid']
-        args.train_sampleid = source_data_config['sampleid']
+    args.train_roomid = source_data_config['roomid']
+    args.train_userid = source_data_config['userid']
+    args.train_location = source_data_config['location']
+    args.train_orientation = source_data_config['orientation']
+    args.train_receiverid = source_data_config['receiverid']
+    args.train_sampleid = source_data_config['sampleid']
 
-        args.test_roomid = target_data_config['roomid']
-        args.test_userid = target_data_config['userid']
-        args.test_location = target_data_config['location']
-        args.test_orientation = target_data_config['orientation']
-        args.test_receiverid = target_data_config['receiverid']
-        args.test_sampleid = target_data_config['sampleid']
+    args.test_roomid = target_data_config['roomid']
+    args.test_userid = target_data_config['userid']
+    args.test_location = target_data_config['location']
+    args.test_orientation = target_data_config['orientation']
+    args.test_receiverid = target_data_config['receiverid']
+    args.test_sampleid = target_data_config['sampleid']
 
-        args.root = Path(data_sample_config['root'])
-        args.dataset = data_sample_config['dataset']
-        args.data_shape = data_sample_config['data_shape']
-        args.chunk_size = data_sample_config['chunk_size']
-        args.num_shot = data_sample_config['num_shot']
-        args.batch_size = data_sample_config['batch_size']
-        args.mode = data_sample_config['mode']
-        args.align = data_sample_config['align']
+    args.root = Path(data_sample_config['root'])
+    args.dataset = data_sample_config['dataset']
+    args.data_shape = data_sample_config['data_shape']
+    args.chunk_size = data_sample_config['chunk_size']
+    args.num_shot = data_sample_config['num_shot']
+    args.batch_size = data_sample_config['batch_size']
+    args.mode = data_sample_config['mode']
+    args.align = data_sample_config['align']
 
-        args.model_name = encoder_config['model_name']
+    args.model_name = encoder_config['model_name']
 
-        args.layers = PrototypicalResNet_config['layers']
-        args.strides = PrototypicalResNet_config['strides']
-        args.ResNet_inchannel = PrototypicalResNet_config['inchannel']
-        args.groups = PrototypicalResNet_config['groups']
+    args.layers = PrototypicalResNet_config['layers']
+    args.strides = PrototypicalResNet_config['strides']
+    args.ResNet_inchannel = PrototypicalResNet_config['inchannel']
+    args.groups = PrototypicalResNet_config['groups']
 
-        args.in_channel_cnn = PrototypicalCnnLstmNet_config['in_channel_cnn']
-        args.out_feature_dim_cnn = PrototypicalCnnLstmNet_config['out_feature_dim_cnn']
-        args.out_feature_dim_lstm = PrototypicalCnnLstmNet_config['out_feature_dim_lstm']
-        args.num_lstm_layer = PrototypicalCnnLstmNet_config['num_lstm_layer']
+    args.in_channel_cnn = PrototypicalCnnLstmNet_config['in_channel_cnn']
+    args.out_feature_dim_cnn = PrototypicalCnnLstmNet_config['out_feature_dim_cnn']
+    args.out_feature_dim_lstm = PrototypicalCnnLstmNet_config['out_feature_dim_lstm']
+    args.num_lstm_layer = PrototypicalCnnLstmNet_config['num_lstm_layer']
 
-        args.width_mult = PrototypicalMobileNet_config['width_mult']
-        args.MobileNet_inchannel = PrototypicalMobileNet_config['inchannel']
+    args.width_mult = PrototypicalMobileNet_config['width_mult']
+    args.MobileNet_inchannel = PrototypicalMobileNet_config['inchannel']
 
+    exps = setting['exps']
+    ex_repeat = setting['ex_repeat']
+    for exp in exps:
+
+        metric_config = exp['metric_config']
+        style_config = exp['style_config']
         args.metric_method = metric_config['metric_method']
         args.num_class_linear_flag = metric_config['num_class_linear_flag']
+        args.num_domain_linear_flag = metric_config['num_domain_linear_flag']
         args.combine = metric_config['combine']
-
         args.max_epochs = max_epochs
-        ex_repeat  =  setting['ex_repeat']
+        args.class_feature_style = style_config['class_feature_style']
+        args.domain_feature_style = style_config['domain_feature_style']
+        args.pn_style = style_config['pn_style']
 
-        print("Experiment Setting Index:{}".format(i))
         print("Experiment Setting Config:{}".format(setting))
 
-        for j in range(ex_repeat):
-            run(args,setting)
-        # print(args)
+        #代码调整  class_feature_style  domain_feature_style
 
+        for j in range(ex_repeat):
+            run(args)
+        # print(args)

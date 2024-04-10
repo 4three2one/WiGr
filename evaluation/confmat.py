@@ -52,12 +52,12 @@ if __name__ == "__main__":
     # comfumat_metirc_all2 = np.load(file2)
     # comfumat_metirc_all1 = np.load(file1)
     # cm = np.load(file)
-    cm1 = np.load(file1)
-    cm2 = np.load(file2)
-    cm=(cm1+cm2)/2
-
+    # cm1 = np.load(file1)
+    # cm2 = np.load(file2)
+    # cm=(cm1+cm2)/2
+    cm=np.load("/data/projs/WiGr/lighting_logs/08-widar-s1/loc-dcosine-s1-ori[2]-u[2]-phase-Class-style_PN-style_version_71/comfumat_metirc_all.npy")
     # cm = (comfumat_metirc_all1[200]+comfumat_metirc_all2[300])/2
     # plot_confusion_matrix((cm[200]+comfumat_metirc_all1[300]++comfumat_metirc_all2[200])/3, labels_name, "In-Domain")
-    plot_confusion_matrix((cm[200]), labels_name, "In-Domain")
+    plot_confusion_matrix((cm[150]), labels_name, "In-Domain")
     # plt.savefig('/HAR_cm.png', format='png')
     # plt.show()
