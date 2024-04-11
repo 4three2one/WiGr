@@ -1,0 +1,63 @@
+[1]	Karray F, Alemzadeh M, Abou Saleh J, et al. Human-computer interaction: Overview on state of the art[J]. International journal on smart sensing and intelligent systems, 2008, 1(1): 137-159.
+[2]	Chignell M, Wang L, Zare A, et al. The evolution of HCI and human factors: Integrating human and artificial intelligence[J]. ACM Transactions on Computer-Human Interaction, 2023, 30(2): 1-30.
+[3]	Yang J, Zou H, Jiang H, et al. Device-free occupant activity sensing using WiFi-enabled IoT devices for smart homes[J]. IEEE Internet of Things Journal, 2018, 5(5): 3991-4002.
+[4]	Khanna A, Kaur S. Internet of things (IoT), applications and challenges: a comprehensive review[J]. Wireless Personal Communications, 2020, 114: 1687-1762.
+[5]	Wang Y, Wu K, Ni L M. Wifall: Device-free fall detection by wireless networks[J]. IEEE Transactions on Mobile Computing, 2016, 16(2): 581-594.
+[6]	Zhou S, Guo L, Lu Z, et al. Wi-Monitor: Daily Activity Monitoring Using Commodity Wi-Fi[J]. IEEE Internet of Things Journal, 2022, 10(2): 1588-1604.
+[7]	Fan X, Gong W, Liu J. i2tag: RFID mobility and activity identification through intelligent profiling[J]. ACM Transactions on Intelligent Systems and Technology (TIST), 2017, 9(1): 1-21.
+[8]	Pahlavan K, Krishnamurthy P. Evolution and impact of Wi-Fi technology and applications: A historical perspective[J]. International Journal of Wireless Information Networks, 2021, 28: 3-19.
+[9]	Xiao J, Li H, Wu M, et al. A survey on wireless device-free human sensing: Application scenarios, current solutions, and open issues[J]. ACM Computing Surveys, 2022, 55(5): 1-35.
+[10]	Heikenfeld J, Jajack A, Rogers J, et al. Wearable sensors: modalities, challenges, and prospects[J]. Lab on a Chip, 2018, 18(2): 217-248.
+[11]	Yousefi S, Narui H, Dayal S, et al. A survey on behavior recognition using WiFi channel state information[J]. IEEE Communications Magazine, 2017, 55(10): 98-104.
+[12]	鲁勇, 吕绍和, 王晓东, et al. 基于WiFi信号的人体行为感知技术研究综述 [J]. 计算机学报, 2019, 42(02): 1-21.
+[13]	Ropitault T, da Silva C R C M, Blandino S, et al. IEEE 802.11 bf WLAN Sensing Procedure: Enabling the Widespread Adoption of WiFi Sensing[J]. IEEE Communications Standards Magazine, 2024, 8(1): 58-64.
+[14]	Moshiri P F, Shahbazian R, Nabati M, et al. A CSI-based human activity recognition using deep learning[J]. Sensors, 2021, 21(21): 7225.
+[15]	Seifeldin M, Saeed A, Kosba A E, et al. Nuzzer: A large-scale device-free passive localization system for wireless environments[J]. IEEE Transactions on Mobile Computing, 2012, 12(7): 1321-1334.
+[16]	周牧, 龙玥辛, 蒲巧林, et al. 基于CSI张量分解的室内Wi-Fi指纹定位方法 [J]. 通信学报, 2021, 42(11): 159-71.
+[17]	Zhang Y, Qu C, Wang Y. An indoor positioning method based on CSI by using features optimization mechanism with LSTM[J]. IEEE Sensors Journal, 2020, 20(9): 4868-4878.
+[18]	Chen Z, Zhang L, Jiang C, et al. WiFi CSI based passive human activity recognition using attention based BLSTM[J]. IEEE Transactions on Mobile Computing, 2018, 18(11): 2714-2724.
+[19]	Yang J, Chen X, Zou H, et al. EfficientFi: Toward large-scale lightweight WiFi sensing via CSI compression[J]. IEEE Internet of Things Journal, 2022, 9(15): 13086-13095.
+[20]	He W, Wu K, Zou Y, et al. WiG: WiFi-based gesture recognition system[C]//2015 24th International Conference on Computer Communication and Networks (ICCCN). IEEE, 2015: 1-7.
+[21]	Tan S, Yang J, Chen Y. Enabling fine-grained finger gesture recognition on commodity WiFi devices[J]. IEEE Transactions on Mobile Computing, 2020, 21(8): 2789-2802.
+[22]	Meng W, Chen X, Cui W, et al. WiHGR: A robust WiFi-based human gesture recognition system via sparse recovery and modified attention-based BGRU[J]. IEEE Internet of Things Journal, 2021, 9(12): 10272-10282.
+[23]	Zhang D, Wang H, Wu D. Toward centimeter-scale human activity sensing with Wi-Fi signals[J]. Computer, 2017, 50(1): 48-57.
+[24]	Wang H, Zhang D, Wang Y, et al. RT-Fall: A real-time and contactless fall detection system with commodity WiFi devices[J]. IEEE Transactions on Mobile Computing, 2016, 16(2): 511-526.
+[25]	Liu S, Chen Y, Wang H, et al. A low-calculation contactless continuous authentication based on postural transition[J]. IEEE Transactions on Information Forensics and Security, 2022, 17: 3077-3090.
+[26]	Bahl P, Padmanabhan V N. RADAR: An in-building RF-based user location and tracking system[C]//Proceedings IEEE INFOCOM 2000. Conference on computer communications. Nineteenth annual joint conference of the IEEE computer and communications societies (Cat. No. 00CH37064). Ieee, 2000, 2: 775-784.
+[27]	Halperin D, Hu W, Sheth A, et al. Tool release: Gathering 802.11 n traces with channel state information[J]. ACM SIGCOMM computer communication review, 2011, 41(1): 53-53.
+[28]	Wang W, Liu A X, Shahzad M, et al. Understanding and modeling of wifi signal based human activity recognition[C]//Proceedings of the 21st annual international conference on mobile computing and networking. 2015: 65-76.
+[29]	Zhang J, Tang Z, Li M, et al. CrossSense: Towards cross-site and large-scale WiFi sensing[C]//Proceedings of the 24th annual international conference on mobile computing and networking. 2018: 305-320.
+[30]	Liu S, Zhao Y, Chen B. WiCount: A deep learning approach for crowd counting using WiFi signals[C]//2017 IEEE International Symposium on Parallel and Distributed Processing with Applications and 2017 IEEE International Conference on Ubiquitous Computing and Communications (ISPA/IUCC). IEEE, 2017: 967-974.
+[31]	Ma Y, Zhou G, Wang S. WiFi sensing with channel state information: A survey[J]. ACM Computing Surveys (CSUR), 2019, 52(3): 1-36.
+[32]	Zhang J, Wu F, Wei B, et al. Data augmentation and dense-LSTM for human activity recognition using WiFi signal[J]. IEEE Internet of Things Journal, 2020, 8(6): 4628-4641.
+[33]	Yadav S K, Sai S, Gundewar A, et al. CSITime: Privacy-preserving human activity recognition using WiFi channel state information[J]. Neural Networks, 2022, 146: 11-21.
+[34]	Zhang Y, Zheng Y, Qian K, et al. Widar3. 0: Zero-effort cross-domain gesture recognition with wi-fi[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2021, 44(11): 8671-8688.
+[35]	Li C, Liu M, Cao Z. WiHF: Gesture and user recognition with WiFi[J]. IEEE Transactions on Mobile Computing, 2020, 21(2): 757-768.
+[36]	Gao R, Zhang M, Zhang J, et al. Towards position-independent sensing for gesture recognition with Wi-Fi[J]. Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies, 2021, 5(2): 1-28.
+[37]	Niu K, Zhang F, Wang X, et al. Understanding WiFi signal frequency features for position-independent gesture sensing[J]. IEEE Transactions on Mobile Computing, 2021, 21(11): 4156-4171.
+[38]	Gao R, Li W, Xie Y, et al. Towards robust gesture recognition by characterizing the sensing quality of WiFi signals[J]. Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies, 2022, 6(1): 1-26.
+[39]	Yin G, Zhang J, Shen G, et al. Fewsense, towards a scalable and cross-domain wi-fi sensing system using few-shot learning[J]. IEEE Transactions on Mobile Computing, 2022.
+[40]	Sheng B, Xiao F, Sha L, et al. Deep spatial–temporal model based cross-scene action recognition using commodity WiFi[J]. IEEE Internet of Things Journal, 2020, 7(4): 3592-3601.
+[41]	Jiang W, Miao C, Ma F, et al. Towards environment independent device free human activity recognition[C]//Proceedings of the 24th annual international conference on mobile computing and networking. 2018: 289-304.
+[42]	Zou H, Yang J, Zhou Y, et al. Joint adversarial domain adaptation for resilient WiFi-enabled device-free gesture recognition[C]//2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA). IEEE, 2018: 202-207.
+[43]	Kang H, Zhang Q, Huang Q. Context-aware wireless-based cross-domain gesture recognition[J]. IEEE Internet of Things Journal, 2021, 8(17): 13503-13515.
+[44]	Liu S, Chen Z, Wu M, et al. WiSR: Wireless Domain Generalization Based on Style Randomization[J]. IEEE Transactions on Mobile Computing, 2023.
+[45]	Shi Z, Zhang J A, Xu R Y, et al. Environment-robust device-free human activity recognition with channel-state-information enhancement and one-shot learning[J]. IEEE Transactions on Mobile Computing, 2020, 21(2): 540-554.
+[46]	Zhang Y, Chen Y, Wang Y, et al. CSI-based human activity recognition with graph few-shot learning[J]. IEEE Internet of Things Journal, 2021, 9(6): 4139-4151.
+[47]	Zhou Z, Wang F, Yu J, et al. Target-oriented semi-supervised domain adaptation for WiFi-based HAR[C]//IEEE INFOCOM 2022-IEEE Conference on Computer Communications. IEEE, 2022: 420-429.
+[48]	Zhang X, Tang C, Yin K, et al. WiFi-based cross-domain gesture recognition via modified prototypical networks[J]. IEEE Internet of Things Journal, 2021, 9(11): 8584-8596.
+[49]	牛凯, 张扶桑, 吴丹, et al. 用菲涅尔区模型探究WiFi感知系统的稳定性 [J]. 计算机科学与探索, 2021, 15(01): 60-72.
+[50]	Liu X, Zhang F, Hou Z, et al. Self-supervised learning: Generative or contrastive[J]. IEEE transactions on knowledge and data engineering, 2021, 35(1): 857-876.
+[51]	Wang Y, Yao Q, Kwok J T, et al. Generalizing from a few examples: A survey on few-shot learning[J]. ACM computing surveys (csur), 2020, 53(3): 1-34.
+[52]	Wang J, Lan C, Liu C, et al. Generalizing to unseen domains: A survey on domain generalization[J]. IEEE Transactions on Knowledge and Data Engineering, 2022.
+[53]	Wang Z, Guo B, Yu Z, et al. Wi-Fi CSI-based behavior recognition: From signals and actions to activities[J]. IEEE Communications Magazine, 2018, 56(5): 109-115.
+[54]	Yang J, Chen X, Zou H, et al. Autofi: Toward automatic wi-fi human sensing via geometric self-supervised learning[J]. IEEE Internet of Things Journal, 2022, 10(8): 7416-7425.
+[55]	Zeng Y, Pathak P H, Mohapatra P. WiWho: WiFi-based person identification in smart spaces[C]//2016 15th ACM/IEEE International Conference on Information Processing in Sensor Networks (IPSN). IEEE, 2016: 1-12.
+[56]	Zhang J, Chen Z, Luo C, et al. MetaGanFi: Cross-domain unseen individual identification using WiFi signals[J]. Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies, 2022, 6(3): 1-21.
+[57]	Eldele E, Ragab M, Chen Z, et al. Self-supervised contrastive representation learning for semi-supervised time-series classification[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2023.
+[58]	Liu D, Wang T, Liu S, et al. Contrastive self-supervised representation learning for sensing signals from the time-frequency perspective[C]//2021 International Conference on Computer Communications and Networks (ICCCN). IEEE, 2021: 1-10.
+[59]	Zhang K, Wen Q, Zhang C, et al. Self-supervised learning for time series analysis: Taxonomy, progress, and prospects[J]. arXiv preprint arXiv:2306.10125, 2023.
+[60]	Van der Maaten L, Hinton G. Visualizing data using t-SNE[J]. Journal of machine learning research, 2008, 9(11).
+[61]	Wang F, Feng J, Zhao Y, et al. Joint activity recognition and indoor localization with WiFi fingerprints[J]. IEEE Access, 2019, 7: 80058-80068.
+[62]	Huang X, Belongie S. Arbitrary style transfer in real-time with adaptive instance normalization[C]//Proceedings of the IEEE international conference on computer vision. 2017: 1501-1510.
+[63]	Cui W, Zhang L, Li B, et al. Received signal strength based indoor positioning using a random vector functional link network[J]. IEEE Transactions on Industrial Informatics, 2017, 14(5): 1846-1855.

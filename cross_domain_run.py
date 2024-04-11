@@ -105,7 +105,7 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        exp_name=f"{args.dataset}-10"
+        exp_name=f"style-test-{args.dataset}"
         if not os.path.exists(os.path.join(args.log_dir,exp_name)):
             os.makedirs(os.path.join(args.log_dir,exp_name))
         for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
@@ -195,8 +195,8 @@ def multi_exps_widar(args,ex_repeat):
                         try:
                             print(args)
                             run(args)
-                        except:
-                            print("#error", args)
+                        except Exception as e:
+                            print("#error！！！！！！！", e,args)
     elif args.cross_type == "user":
         for ori in ori_li:
             for loc in loc_li:

@@ -105,10 +105,10 @@ class CSI_301(CustomIterDataset):
 
     def get_item(self, sample_index):
         if self.mode is not None:
-            if self.mode == 'phase':
+            if self.mode == 'pha':
                 pha_sample = self.group.csi_data_pha[sample_index]
                 sample = pha_sample.astype(np.float32)  # shape [1800,3,114]
-            elif self.mode == 'amplitude':
+            elif self.mode == 'amp':
                 amp_sample = self.group.csi_data_amp[sample_index]
                 # amp_sample = self.amp[sample_index]
                 sample = amp_sample.astype(np.float32)  # shape [1800,3,114]
