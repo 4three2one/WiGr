@@ -105,7 +105,7 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        exp_name=f"style-distance-{args.dataset}"
+        exp_name=f"test-input-{args.dataset}"
         if not os.path.exists(os.path.join(args.log_dir,exp_name)):
             os.makedirs(os.path.join(args.log_dir,exp_name))
         for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
@@ -135,6 +135,8 @@ def run(args):
                 fixed = f"ori{args.train_userid}-loc{args.train_location}"
             else:
                 return
+        if args.dataset == "aril":
+            fixed=""
         prefix=(f"{args.cross_type}-d{args.metric_method}-s{args.num_shot}--{args.mode}-{args.use_attention}"+(f"-Class-{args.class_feature_style}_" if args.num_class_linear_flag else "") + (
             f"PN-{args.pn_style}_" if args.pn_style else ""))
 
@@ -209,9 +211,8 @@ def multi_exps_widar(args,ex_repeat):
                         try:
                             print(args)
                             run(args)
-                        except:
-                            print("#error",args)
-                            pass
+                        except Exception as e:
+                            print("#error！！！！！！！", e, args)
     else:
         print("Wrong cross_type")
         return
@@ -247,8 +248,8 @@ def multi_exps_csida(args,ex_repeat):
                             try:
                                 print(args)
                                 run(args)
-                            except:
-                                print("Error---->room",str(room),",user",str(user))
+                            except Exception as e:
+                                print("#error！！！！！！！", e, args)
     elif args.cross_type == "user":
         for room in room_li:
             if 0 in room:
@@ -262,8 +263,11 @@ def multi_exps_csida(args,ex_repeat):
                     for shot in shots:
                         args.num_shot = shot
                         for j in range(ex_repeat):
-                            print(args)
-                            run(args)
+                            try:
+                                print(args)
+                                run(args)
+                            except Exception as e:
+                                print("#error！！！！！！！", e, args)
 
     elif args.cross_type == "room":
         for room in room_li:
@@ -279,12 +283,31 @@ def multi_exps_csida(args,ex_repeat):
                     args.train_userid=user
                     # args.num_shot = shot
                     for j in range(ex_repeat):
-                        # print(111)
-                        run(args)
+                        try:
+                            print(args)
+                            run(args)
+                        except Exception as e:
+                            print("#error！！！！！！！", e, args)
     else:
         print("Wrong cross_type")
         return
 
+def multi_exps_aril(args,ex_repeat):
+    shots = [2,3]
+    # shots = [1]
+    if args.cross_type == "loc":
+        for shot in shots:
+            args.num_shot = shot
+            args.train_location=None
+            for j in range(ex_repeat):
+                try:
+                    print(args)
+                    run(args)
+                except Exception as e:
+                    print("#error！！！！！！！", e, args)
+    else:
+        print("Wrong cross_type")
+        return
 
 
 if __name__ == '__main__':
@@ -440,6 +463,7 @@ if __name__ == '__main__':
 
         metric_config = exp['metric_config']
         style_config = exp['style_config']
+        input_config = exp['input_config']
         args.metric_method = metric_config['metric_method']
         args.use_attention = metric_config['use_attention']
         args.num_class_linear_flag = metric_config['num_class_linear_flag']
@@ -449,6 +473,8 @@ if __name__ == '__main__':
         args.class_feature_style = style_config['class_feature_style']
         args.domain_feature_style = style_config['domain_feature_style']
         args.pn_style = style_config['pn_style']
+        args.ResNet_inchannel  = input_config['inchannel']
+        args.mode  = input_config['mode']
 
         # print("Experiment Setting Config:{}".format(setting))
 
@@ -458,7 +484,7 @@ if __name__ == '__main__':
         elif args.dataset == "csi_301":
             multi_exps_csida(args, ex_repeat)
         elif args.dataset == "aril":
-            # multi_exps_aril(args, ex_repeat)
+            multi_exps_aril(args, ex_repeat)
             pass
         else:
             pass
