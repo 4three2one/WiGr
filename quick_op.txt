@@ -14,8 +14,9 @@ tensorboard --logdir="/data/projs/WiGr/lighting_logs/aril"  --bind_all
 
 
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar-10" --port 6006 --bind_all &
-nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/08-widar-s2" --port 6007 --bind_all &
-``nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/08-widar-s3" --port 6008 --bind_all &`
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/style-test-widar" --port 6007 --bind_all &
+
+nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/style-distance-csi_301" --port 6009 --bind_all &
 
 
 nohup tensorboard --logdir="/data/projs/WiGr/lighting_logs/widar" --port 6007 --bind_all &

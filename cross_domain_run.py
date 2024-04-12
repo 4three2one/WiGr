@@ -105,7 +105,7 @@ def run(args):
         checkpoint_callback = ModelCheckpoint( monitor='GesVa_loss', save_last =False, save_top_k =0)
         #自定义log
         existing_versions = []
-        exp_name=f"style-test-{args.dataset}"
+        exp_name=f"style-distance-{args.dataset}"
         if not os.path.exists(os.path.join(args.log_dir,exp_name)):
             os.makedirs(os.path.join(args.log_dir,exp_name))
         for bn in os.listdir(os.path.join(args.log_dir,exp_name)):
@@ -227,6 +227,7 @@ def multi_exps_csida(args,ex_repeat):
     # }
     # locs = [0,1]
     shots = [1,2,3]
+    shots = [1]
     user_li = [list(pair) for pair in itertools.combinations(users, 1)]
     # loc_li = [list(pair) for pair in itertools.combinations(locs, 1)]
     room_li = [list(pair) for pair in itertools.combinations(rooms, 1)]
@@ -244,6 +245,7 @@ def multi_exps_csida(args,ex_repeat):
                         args.train_location=None
                         for j in range(ex_repeat):
                             try:
+                                print(args)
                                 run(args)
                             except:
                                 print("Error---->room",str(room),",user",str(user))
@@ -260,7 +262,7 @@ def multi_exps_csida(args,ex_repeat):
                     for shot in shots:
                         args.num_shot = shot
                         for j in range(ex_repeat):
-                            # print(111)
+                            print(args)
                             run(args)
 
     elif args.cross_type == "room":
